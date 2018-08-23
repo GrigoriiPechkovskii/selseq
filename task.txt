@@ -1,0 +1,13 @@
+#proselseq_V_X.X.XX
+#update v 0.1.00 - change version system
+#update v 0.1.01 - change varable name, action under function
+#update v 0.1.02 - change function make_tags more fast with suport list and str
+#				 - all under function
+#update v 0.1.03 - made maine script	 
+'''Коментарии по программе
+1 - class Cluster сейчас излиhшне сложным
+4 - итератор для файлов fasta можешь сделать
+5 - часть tail интегрировать с class SequenceFasta
+6 - парсинг бласт таблицы использовать кластеризацию
+7 - нужна ли кластеризация дял aln
+'''
