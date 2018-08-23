@@ -1,3 +1,12 @@
+#directory ignore
+old_version
+#for test mini
+test_mini/*
+!test_mini/GCA_1.faa
+!test_mini/GCA_2.faa
+!test_mini/GCA_3.faa
+!group_table.csv
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
