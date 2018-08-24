@@ -36,10 +36,7 @@ def seq_choice(seq_store_in,percent_range = 3):
 		id_base = find_tag('seq_id',name)
 		assemble_base = find_tag('assemble',name)
 		seq_id_assemble_base[id_base] = assemble_base
-		seq_id_persent[id_base] = seq_threshold[name]
-	#print('seq_threshold == ',seq_threshold)
-	#print('seq_id_assemble_base == ',seq_id_assemble_base)
-	#full_seq_threshold += 
+		seq_id_persent[id_base] = seq_threshold[name]	 
 	return seq_id_assemble_base,seq_id_persent 
 
 base_used = []
@@ -57,22 +54,29 @@ def division(seq_id_assemble_base):
 					protein_rec.close()	
 plt_dic = {}
 def division2(seq_choiced):
+	'''The function is intended for distribution of sequences from the blast table
+	and for create plot data.
+	Input two dictionary in turple
+	First seq_id and asseble
+	{'seq_num_3': 'GCA_3', 'seq_num_8': 'GCA_2', 'seq_num_9': 'GCA_2'}
+	Second seq_id and persent
+	{'seq_num_3': '100', 'seq_num_8': '85', 'seq_num_9': '90'}       
+	'''
 	global plt_dic
 	
 	for seq_id, assemble in seq_choiced[0].items():
+		#print (id_list_ref)
 		if seq_id not in base_used:	
 			base_used.append(seq_id)
 			plt_dic[seq_id + assemble] = seq_choiced[1][seq_id]
 			assemble_fasta = SequenceFasta(REDATA_DIRECTORY + assemble + '.faa')
 			assemble_fasta.seq_process()
-			for prot_number in range(0,len(assemble_fasta.name_lst)):
-				if seq_id in assemble_fasta.name_lst[prot_number]:
-					protein_rec = open (REDATA_DIRECTORY + id_list_ref+ '.faa', 'a') 
+			for prot_number in range(0,len(assemble_fasta.name_lst)):				
+				if seq_id == find_tag('seq_id',assemble_fasta.name_lst[prot_number]):					
+					protein_rec = open (REDATA_DIRECTORY + id_list_ref+ '.faa', 'a')					
+					
 					protein_rec.write(assemble_fasta.name_lst[prot_number] + assemble_fasta.seq_lst[prot_number])
-					protein_rec.close()	
-	#print(plt_dic)
-
-
+					protein_rec.close()
 
 def parsing_blast(tbl):
 	global id_list_ref	
@@ -83,6 +87,7 @@ def parsing_blast(tbl):
 		table_list = table_line.split(',')
 		ref_seq = table_list[0]
 		#id_list_ref = find_tag('seq_id',ref_seq)
+		#adding in seq_store:pd.Series()
 		if ref_seq==ref_seq_last or ref_seq_last == 'start':
 			#Проверка если в таблице есть тот же белок но с большим процентом, возможно не обязательная
 			if table_list[1] in seq_store:
@@ -96,7 +101,9 @@ def parsing_blast(tbl):
 		else:
 			id_list_ref = find_tag('seq_id',ref_seq_last)
 			assemble_base = find_tag('assemble',table_list[1])
+			#print('seq_store',seq_store)
 			seq_choiced = seq_choice(seq_store)
+			
 			#print(seq_choiced[1])	
 			division2(seq_choiced)
 
@@ -110,8 +117,7 @@ def parsing_blast(tbl):
 	division2(seq_choiced)
 	#print(seq_id_assemble_base)
 	#print(seq_store)
-	table_opened.close()
-
+	table_opened.close()	
 #parsing_blast('tbl.csv')
 '''
 if __name__ == '__main__':

@@ -10,4 +10,6 @@
 5 - часть tail интегрировать с class SequenceFasta
 6 - парсинг бласт таблицы использовать кластеризацию
 7 - нужна ли кластеризация дял aln
+8 - run program without group_table, only for redata
+9 - fix GCA and .faa add more
 '''

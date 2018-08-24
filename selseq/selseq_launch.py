@@ -3,7 +3,7 @@ from selseq_constant import *
 
 
 from selseq_main import *
-from tbl_pars_pandas import *
+from parsing_blast_tbl import *
 import selseq_control as selseq_control
 
 
@@ -77,6 +77,7 @@ group_HOME_DIRECTORY = group_HOME_DIRECTORY(HOME_DIRECTORY)
 make_group_muscle(group_HOME_DIRECTORY)                      
 
 selseq_control.timecheck('mucsle')
+
 
 #fig = plt.figure()
 plt_dic = pd.Series(plt_dic)

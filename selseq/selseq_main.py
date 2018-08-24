@@ -165,7 +165,7 @@ def blast():
 
     #subprocess.call('makeblastdb -in '+ REDATA_DIRECTORY +'joint_file -dbtype prot -out ' + REDATA_DIRECTORY + 'blastdb >111',stdout=subprocess.PIPE,shell=True)
 
-    subprocess.call('/home/grigoriipechkovskii/bio/ncbi-blast-2.7.1+/bin/blastp -db '+ REDATA_DIRECTORY +'blastdb -query '+ REDATA_DIRECTORY +'GCA_1.faa -out '+ REDATA_DIRECTORY + 'tbl.csv -outfmt 10 2>' + HOME_DIRECTORY + '111', shell=True)
+    subprocess.call('/home/grigoriipechkovskii/bio/ncbi-blast-2.7.1+/bin/blastp -db '+ REDATA_DIRECTORY +'blastdb -query '+ REDATA_DIRECTORY + QUERY_SEQ + ' -out '+ REDATA_DIRECTORY + 'tbl.csv -outfmt 10 2>' + HOME_DIRECTORY + '111', shell=True)
 
     #subprocess.call('blastp -db '+ REDATA_DIRECTORY +'blastdb -query '+ REDATA_DIRECTORY + QUERY_SEQ + ' -out '+ REDATA_DIRECTORY + 'tbl.csv -outfmt 10 2>111', shell=True)
 
