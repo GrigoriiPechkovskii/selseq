@@ -9,19 +9,22 @@ QUERY_SEQ = 'GCA_InfluenzaA1.faa'
 GROUP_TAG = ['Group']
 group_for_selection = ['Group']
 
-#if sys.platform == 'linux':
+if sys.platform == 'linux':
 	#Linux
-HOME_DIRECTORY  = os.getcwd() + '/'
+	HOME_DIRECTORY  = os.getcwd() + '/'
 
-HOME_DIRECTORY = '/home/grigoriipechkovskii/Desktop/selseq/test_virus/'
-TABLE_CSV = HOME_DIRECTORY + TABLE_CSV
+	HOME_DIRECTORY = '/home/grigoriipechkovskii/Desktop/selseq/test_virus/'	
 
-REDATA_DIRECTORY = HOME_DIRECTORY + NAME_EXP +'redata/'
-ALNDATA_DIRECTORY = HOME_DIRECTORY + NAME_EXP +'alndata/'
+	REDATA_DIRECTORY = HOME_DIRECTORY + NAME_EXP +'redata/'
+	ALNDATA_DIRECTORY = HOME_DIRECTORY + NAME_EXP +'alndata/'
+	TABLE_CSV = HOME_DIRECTORY + TABLE_CSV
 
-#Windows
-#HOME_DIRECTORY  = os.getcwd() + '\\'
-#REDATA_DIRECTORY = HOME_DIRECTORY + NAME_EXP +'redata\\'
-#ALNDATA_DIRECTORY = HOME_DIRECTORY + NAME_EXP +'alndata\\'
+if sys.platform == 'win32':
+	#Windows
+	HOME_DIRECTORY  = os.getcwd() + '\\'
+	HOME_DIRECTORY = 'C:\\Users\\Grin\\Desktop\\selseq\\test_virus\\'
+	REDATA_DIRECTORY = HOME_DIRECTORY + NAME_EXP +'redata\\'
+	ALNDATA_DIRECTORY = HOME_DIRECTORY + NAME_EXP +'alndata\\'
+	TABLE_CSV = HOME_DIRECTORY + TABLE_CSV
 
 HOME_FILES = os.listdir(HOME_DIRECTORY)

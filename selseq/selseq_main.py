@@ -160,14 +160,17 @@ def joining_files(files,REDATA_DIRECTORY):
 	        file_reopened.write(var_name_file)
 	        file_opened.close()
 	        file_reopened.close()
-def blast():
-    subprocess.call('/home/grigoriipechkovskii/bio/ncbi-blast-2.7.1+/bin/makeblastdb -in '+ REDATA_DIRECTORY +'joint_file -dbtype prot -out ' + REDATA_DIRECTORY + 'blastdb >' + HOME_DIRECTORY + '111',stdout=subprocess.PIPE,shell=True)
 
-    #subprocess.call('makeblastdb -in '+ REDATA_DIRECTORY +'joint_file -dbtype prot -out ' + REDATA_DIRECTORY + 'blastdb >111',stdout=subprocess.PIPE,shell=True)
+def blast(DB,QUERY_SEQ,OUT_BD,OUT_TBL):
 
-    subprocess.call('/home/grigoriipechkovskii/bio/ncbi-blast-2.7.1+/bin/blastp -db '+ REDATA_DIRECTORY +'blastdb -query '+ REDATA_DIRECTORY + QUERY_SEQ + ' -out '+ REDATA_DIRECTORY + 'tbl.csv -outfmt 10 2>' + HOME_DIRECTORY + '111', shell=True)
+    if sys.platform == 'linux':
+        subprocess.call('/home/grigoriipechkovskii/bio/ncbi-blast-2.7.1+/bin/makeblastdb -in '+ REDATA_DIRECTORY + DB + ' -dbtype prot -out ' + REDATA_DIRECTORY + OUT_BD +' >' + HOME_DIRECTORY + '111',stdout=subprocess.PIPE,shell=True)
+        subprocess.call('/home/grigoriipechkovskii/bio/ncbi-blast-2.7.1+/bin/blastp -db '+ REDATA_DIRECTORY + OUT_BD + ' -query '+ REDATA_DIRECTORY + QUERY_SEQ + ' -out '+ REDATA_DIRECTORY + OUT_TBL + ' -outfmt 10 2>' + HOME_DIRECTORY + '111', shell=True)
+    
+    if sys.platform == 'win32':    
+        subprocess.call('makeblastdb -in '+ REDATA_DIRECTORY + DB + ' -dbtype prot -out ' + REDATA_DIRECTORY + OUT_BD +' >' + HOME_DIRECTORY + '111',stdout=subprocess.PIPE,shell=True)
+        subprocess.call('blastp -db '+ REDATA_DIRECTORY + OUT_BD + ' -query '+ REDATA_DIRECTORY + QUERY_SEQ + ' -out '+ REDATA_DIRECTORY + OUT_TBL +' -outfmt 10 2>' + HOME_DIRECTORY + '111', shell=True)
 
-    #subprocess.call('blastp -db '+ REDATA_DIRECTORY +'blastdb -query '+ REDATA_DIRECTORY + QUERY_SEQ + ' -out '+ REDATA_DIRECTORY + 'tbl.csv -outfmt 10 2>111', shell=True)
 
     
 def parsing_balst_table(tbl):
@@ -229,14 +232,6 @@ def make_tail(REDATA_DIRECTORY):
 	                tail.write(omics.name_lst[index] + omics.seq_lst[index])
 
 	tail.close()
-
-def blast_tail():
-    #скрипт бласт против хвостов
-    subprocess.call('/home/grigoriipechkovskii/bio/ncbi-blast-2.7.1+/bin/makeblastdb -in '+ REDATA_DIRECTORY + 'tail -dbtype prot -out ' + REDATA_DIRECTORY + 'tailblastdb 2>' + HOME_DIRECTORY + '111',stdout=subprocess.PIPE,shell=True)
-    #subprocess.call('makeblastdb -in '+ REDATA_DIRECTORY + 'tail -dbtype prot -out ' + REDATA_DIRECTORY + 'tailblastdb 2>111',stdout=subprocess.PIPE,shell=True)
-
-    subprocess.call('/home/grigoriipechkovskii/bio/ncbi-blast-2.7.1+/bin/blastp -db '+ REDATA_DIRECTORY +'tailblastdb -query '+ REDATA_DIRECTORY + 'tail -out '+ REDATA_DIRECTORY + 'tbltail.csv -outfmt 10 2>' + HOME_DIRECTORY + '111', shell=True)
-    #subprocess.call('blastp -db '+ REDATA_DIRECTORY +'tailblastdb -query '+ REDATA_DIRECTORY + 'tail -out '+ REDATA_DIRECTORY + 'tbltail.csv -outfmt 10 2>111', shell=True)
 
 def make_muscle(REDATA_DIRECTORY):
 

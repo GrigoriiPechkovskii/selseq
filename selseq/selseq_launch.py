@@ -34,7 +34,7 @@ joining_files(HOME_FILES,REDATA_DIRECTORY)
 
 selseq_control.timecheck('beforblast')
 
-blast()
+blast('joint_file',QUERY_SEQ, 'blastdb','tbl.csv')
 
 selseq_control.timecheck('blast')
 
@@ -49,7 +49,7 @@ make_tail(REDATA_DIRECTORY)
 
 selseq_control.timecheck('tail')
 
-blast_tail()
+blast('tail','tail','tailblastdb','tbltail.csv')
 
 parsing_blast('tbltail.csv')
 #parsing_balst_table('tbltail.csv')
