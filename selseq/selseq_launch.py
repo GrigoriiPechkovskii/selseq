@@ -86,6 +86,7 @@ plt.show()
 print(plt_dic)
 
 
+
 #===================================================================              
 for group_lst,subgroup_lst in group_HOME_DIRECTORY.items():
     for subgroup in subgroup_lst:

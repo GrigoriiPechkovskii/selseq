@@ -1,4 +1,4 @@
-#!/grin/bin/env python
+#!/grin/bin/env python3
 #by Grigorii Pechkovskii, grigorii.pechkovskii@gmail.com
 
 print('start programm')
@@ -23,44 +23,45 @@ def make_tags(tags_names,tags_contents,string):
 		return string
 
 def find_tag(tags_name,string):
-	'''Find tags in string and return tag contents'''
-	tags_name_open ='<' + tags_name + '>'
-	tags_name_close = '</' + tags_name + '>'
-	patern = tags_name_open + '(.*)' + tags_name_close
-	find_tag = re.search(patern,string) #смотри на сырые строки их нету
-	return find_tag.group(1)
+    '''Find tags in string and return tag contents'''
+    tags_name_open ='<' + tags_name + '>'
+    tags_name_close = '</' + tags_name + '>'
+    patern = tags_name_open + '(.*)' + tags_name_close
+    find_tag = re.search(patern,string) #смотри на сырые строки их нету
+    return find_tag.group(1)
 
 class SequenceFasta():
-	'''Processes a fasta file'''
-	def __init__(self,file_dir):
-		self.file_dir=file_dir
-		self.name_lst = []
-		self.seq_lst = []
-	def just_named(self):
-		'''Works only with sequence names'''
-		with open(self.file_dir) as file_opened:
-			for line in file_opened:
-				if '>' in line:
-					self.name_lst.append(line)
-	def seq_process(self,strip=False):
-		seq_tmp = ''
-		with open(self.file_dir) as file_opened:
-			for line in file_opened:
-				if '>' in line:							
-					self.seq_lst.append(seq_tmp)
-					seq_tmp = ''
-					if strip:
-						self.name_lst.append(line.rstrip())
-					else:
-						self.name_lst.append(line)	
-				else:
-					if strip:
-						seq_tmp += line.rstrip()
-					else:
-						seq_tmp += line
-		self.seq_lst.append(seq_tmp)
-		del self.seq_lst[0]
-    
+    '''Processes a fasta file'''
+    def __init__(self,file_dir):
+        self.file_dir=file_dir
+        self.name_lst = []
+        self.seq_lst = []
+    def just_named(self):
+        '''Works only with sequence names'''
+        with open(self.file_dir) as file_opened:
+            for line in file_opened:
+                if '>' in line:
+                    self.name_lst.append(line)
+    def seq_process(self,strip=False):
+        seq_tmp = ''
+        with open(self.file_dir) as file_opened:            
+            for line in file_opened:
+                if '>' in line:
+                    self.seq_lst.append(seq_tmp)
+                    seq_tmp = ''
+                    if strip:
+                        self.name_lst.append(line.rstrip())
+                    else:
+                        self.name_lst.append(line)	
+                else:
+                    if strip:
+                        seq_tmp += line.rstrip()
+                    else:
+                        seq_tmp += line
+        self.seq_lst.append(seq_tmp)
+        del self.seq_lst[0]
+        self.seq_len = len(self.seq_lst)
+
 
 class Cluster():
     '''Return dict with matching the name of the genome and its properties (cluster)'''
@@ -121,66 +122,60 @@ def make_file_name_faa(files):
 	return file_name_faa
 
 
-
-#цикл на добавление номера сборки и штамма
-#os.mkdir(REDATA_DIRECTORY) #создание директории
-
 def UnpackCluster(lst):
     val_str = ''
     for val in lst:
-        val_str += ',' + val#внимание на разделитель
+        val_str += ',' + val#Note splitter
     return val_str.strip(',')
 
 def rename_fasta(files,cluster_dic):     
-	num = 0
-	for file_name in files:
-	    if '.faa' in file_name:
-	        file_opened = open (HOME_DIRECTORY + file_name, 'r' )
-	        file_reopened = open (REDATA_DIRECTORY + file_name, 'a' )
-	        for file_line in file_opened:
-	            if '>' in file_line:
-	                num += 1
-	                string = '>'
-	                file_line = make_tags(['seq_id','assemble','main','cluster_tag'],['seq_num_' + str(num),file_name[0:-4],file_line.strip('>\n'),UnpackCluster(cluster_dic[file_name[0:-4]])],string) + '\n' 
-	                #file_line2 ='>' + 'seq_num_' + str(num) + '<'+ file_name[0:-4]+ '<' + file_line.strip('>\n') + '&&&' + UnpackCluster(cluster.cluster_dic[file_name[0:-4]])+'\n'  #внимание на разделитель
-	                file_reopened.write(file_line)                          
+    num = 0
+    for file_name in files:
+        if '.faa' in file_name:
+            file_opened = open (HOME_DIRECTORY + file_name, 'r' )
+            file_reopened = open (REDATA_DIRECTORY + file_name, 'a' )
+            for file_line in file_opened:
+                if '>' in file_line:
+                    num += 1
+                    string = '>'
+                    file_line = make_tags(['seq_id','assemble','main','cluster_tag'],['seq_num_' + str(num),file_name[0:-4],file_line.strip('>\n'),UnpackCluster(cluster_dic[file_name[0:-4]])],string) + '\n' 
+                    #file_line2 ='>' + 'seq_num_' + str(num) + '<'+ file_name[0:-4]+ '<' + file_line.strip('>\n') + '&&&' + UnpackCluster(cluster.cluster_dic[file_name[0:-4]])+'\n'  #внимание на разделитель
+                    file_reopened.write(file_line)                          
 
-	            else:
-	               file_reopened.write(file_line)
-	        file_opened.close()
-	        file_reopened.close()
+                else:
+                   file_reopened.write(file_line)
+            file_opened.close()
+            file_reopened.close()
 
 
 def joining_files(files,REDATA_DIRECTORY):
-	for file_name in files:
-	    if '.faa' in file_name: #!!!!!
-	        file_opened = open ( REDATA_DIRECTORY + file_name,'r' )
-	        file_reopened = open (REDATA_DIRECTORY + 'joint_file', 'a' )
-	        var_name_file = file_opened.read()
-	        file_reopened.write(var_name_file)
-	        file_opened.close()
-	        file_reopened.close()
+    for file_name in files:
+        if '.faa' in file_name: #!!!!!
+            file_opened = open ( REDATA_DIRECTORY + file_name,'r' )
+            file_reopened = open (REDATA_DIRECTORY + 'joint_file', 'a' )
+            var_name_file = file_opened.read()
+            file_reopened.write(var_name_file)
+            file_opened.close()
+            file_reopened.close()
 
 def blast(DB,QUERY_SEQ,OUT_BD,OUT_TBL):
 
     if sys.platform == 'linux':
-        subprocess.call('/home/grigoriipechkovskii/bio/ncbi-blast-2.7.1+/bin/makeblastdb -in '+ REDATA_DIRECTORY + DB + ' -dbtype prot -out ' + REDATA_DIRECTORY + OUT_BD +' >' + HOME_DIRECTORY + '111',stdout=subprocess.PIPE,shell=True)
-        subprocess.call('/home/grigoriipechkovskii/bio/ncbi-blast-2.7.1+/bin/blastp -db '+ REDATA_DIRECTORY + OUT_BD + ' -query '+ REDATA_DIRECTORY + QUERY_SEQ + ' -out '+ REDATA_DIRECTORY + OUT_TBL + ' -outfmt 10 2>' + HOME_DIRECTORY + '111', shell=True)
+        subprocess.call('/home/grigoriipechkovskii/bio/ncbi-blast-2.7.1+/bin/makeblastdb -in '+ REDATA_DIRECTORY + DB + ' -dbtype prot -out ' + REDATA_DIRECTORY + OUT_BD + ' >' + HOME_DIRECTORY + '111',stdout=subprocess.PIPE,shell=True)
+        subprocess.call('/home/grigoriipechkovskii/bio/ncbi-blast-2.7.1+/bin/blastp -db '+ REDATA_DIRECTORY + OUT_BD + ' -query '+ REDATA_DIRECTORY + QUERY_SEQ + ' -out '+ REDATA_DIRECTORY + OUT_TBL + ' -outfmt 10 -evalue 0.001 2>' + HOME_DIRECTORY + '111', shell=True)
     
     if sys.platform == 'win32':    
         subprocess.call('makeblastdb -in '+ REDATA_DIRECTORY + DB + ' -dbtype prot -out ' + REDATA_DIRECTORY + OUT_BD +' >' + HOME_DIRECTORY + '111',stdout=subprocess.PIPE,shell=True)
-        subprocess.call('blastp -db '+ REDATA_DIRECTORY + OUT_BD + ' -query '+ REDATA_DIRECTORY + QUERY_SEQ + ' -out '+ REDATA_DIRECTORY + OUT_TBL +' -outfmt 10 2>' + HOME_DIRECTORY + '111', shell=True)
+        subprocess.call('blastp -db '+ REDATA_DIRECTORY + OUT_BD + ' -query '+ REDATA_DIRECTORY + QUERY_SEQ + ' -out '+ REDATA_DIRECTORY + OUT_TBL +' -outfmt 10 -evalue 0.001 2>' + HOME_DIRECTORY + '111', shell=True)
 
-
-    
 def parsing_balst_table(tbl):
     
     files = os.listdir(ALNDATA_DIRECTORY)
     base_used = list()
     table_opened = open(REDATA_DIRECTORY + tbl, 'r')
-    for table_line in table_opened: #читает табличку из blast
+    for table_line in table_opened: 
         table_list = table_line.split(',')
-        if float(table_list[2])>80:  #Важная цифра
+        if float(table_list[2])>80:
             
             id_list_ref =find_tag('seq_id',table_list[0]) #список полное название референта
             id_list_base =find_tag('seq_id',table_list[1]) #список полное название найденного белка
@@ -202,43 +197,41 @@ print('start programm tail')
 
 def make_tail(REDATA_DIRECTORY):
 
-	files = os.listdir(REDATA_DIRECTORY)
-	set_aln = set()
-	#находит множетво имен
-	for file_aln in files:  #создаем множество всех белков который попали в aln
-	    if '.faa' and 'seq_num' in file_aln :
-	        file_aln_opened = open(REDATA_DIRECTORY + file_aln)
-	        for line_file_aln in file_aln_opened:
-	            if '>' in line_file_aln:
-	                set_aln.add(line_file_aln.strip()) #сделал множеством наверно можно и через список
-	file_aln_opened.close()
+    files = os.listdir(REDATA_DIRECTORY)
+    set_aln = set()
 
-#решил через словарь.если нету во множестве выровненых белков то записывается в файл
-#перебираются протеомы из них делается словарь, потом перебираются ключи словаря и если нету во множестве записывается
+    for file_aln in files:  
+        if '.faa' and 'seq_num' in file_aln :
+            file_aln_opened = open(REDATA_DIRECTORY + file_aln)
+            for line_file_aln in file_aln_opened:
+                if '>' in line_file_aln:
+                    set_aln.add(line_file_aln.strip()) 
+    file_aln_opened.close()
 
-	files = os.listdir(REDATA_DIRECTORY)
 
-	#tail = open(REDATA_DIRECTORY + 'tail', 'a')
-	prot_save = str()
-	name_save = str()
-	tail = open(REDATA_DIRECTORY + 'tail', 'a')
-	for file_GCF in files:
-	    if 'GCA' in file_GCF:
+    files = os.listdir(REDATA_DIRECTORY)
 
-	        omics = SequenceFasta(REDATA_DIRECTORY + file_GCF)
-	        omics.seq_process()
-	        for index in range(0,len(omics.name_lst)):
-	           if omics.name_lst[index].strip() not in set_aln:
-	                tail.write(omics.name_lst[index] + omics.seq_lst[index])
+    #tail = open(REDATA_DIRECTORY + 'tail', 'a')
+    prot_save = str()
+    name_save = str()
+    tail = open(REDATA_DIRECTORY + 'tail', 'a')
+    for file_GCF in files:
+        if 'GCA' in file_GCF:
 
-	tail.close()
+            omics = SequenceFasta(REDATA_DIRECTORY + file_GCF)
+            omics.seq_process()
+            for index in range(0,len(omics.name_lst)):
+               if omics.name_lst[index].strip() not in set_aln:
+                    tail.write(omics.name_lst[index] + omics.seq_lst[index])
+
+    tail.close()
 
 def make_muscle(REDATA_DIRECTORY):
 
-	files = os.listdir(REDATA_DIRECTORY)
-	for protein_file in files:
-	    if 'seq_num' in protein_file:
-	        subprocess.call('muscle ' + '-in ' +REDATA_DIRECTORY + protein_file + ' -out ' + ALNDATA_DIRECTORY + protein_file[0:-4] + '.aln 2>' + HOME_DIRECTORY + '111',shell = True)
+    files = os.listdir(REDATA_DIRECTORY)
+    for protein_file in files:
+        if 'seq_num' in protein_file:
+            subprocess.call('muscle ' + '-in ' +REDATA_DIRECTORY + protein_file + ' -out ' + ALNDATA_DIRECTORY + protein_file[0:-4] + '.aln 2>' + HOME_DIRECTORY + '111',shell = True)
 
 def into(direct):
     home_files = os.listdir(HOME_DIRECTORY)
@@ -271,8 +264,6 @@ def into(direct):
                 
 print('start grouping')
 
-#files = os.listdir(REDATA_DIRECTORY)
-
 class Selection():
 
     def __init__(self,group=dict):
@@ -297,7 +288,6 @@ class Selection():
                 omics = SequenceFasta(REDATA_DIRECTORY + file)
                 omics.seq_process()
                 for index in range(0,len(omics.name_lst)):
-				#self.seq_num_list = 
                 #for seq_num in self.seq_num_list:
                     for key in self.group:
                         if not os.access(HOME_DIRECTORY + NAME_EXP+'aln_'+ key + '/',os.F_OK):
@@ -322,7 +312,6 @@ def make_group_dict_for_selection(group_for_selection,group_dict):
                 
     return group_dict_for_selection
 
-#для создания словоря директория_группы = директориям_групп
 def group_HOME_DIRECTORY(HOME_DIRECTORY):                    
 	group_HOME_DIRECTORY = {}
 	HOME_DIRECTORY_lev1 = os.listdir(HOME_DIRECTORY)
@@ -339,38 +328,35 @@ def group_HOME_DIRECTORY(HOME_DIRECTORY):
 	return group_HOME_DIRECTORY
 
 def make_group_muscle(group_HOME_DIRECTORY):
-	for group_lst,subgroup_lst in group_HOME_DIRECTORY.items():
-	    for subgroup in subgroup_lst:
-	        files = os.listdir(subgroup)
-	        for file in files:
-	            if 'seq_num' in file:
-	                subprocess.call('muscle ' + '-in ' +subgroup + file + ' -out ' + subgroup + file[0:-4] + '.aln 2>' + HOME_DIRECTORY + '111',shell = True)
-	                os.remove(subgroup + file)
-
-#расчеты
-#скрипт читает файлы aln и выдает информацию 
+    for group_lst,subgroup_lst in group_HOME_DIRECTORY.items():
+        for subgroup in subgroup_lst:
+            files = os.listdir(subgroup)
+            for file in files:
+                if 'seq_num' in file:
+                    subprocess.call('muscle ' + '-in ' +subgroup + file + ' -out ' + subgroup + file[0:-4] + '.aln 2>' + HOME_DIRECTORY + '111',shell = True)
+                    os.remove(subgroup + file)
 
 def entropy_calculate(subgroup):
     HOME_DIRECTORY  = os.getcwd()
-    files = os.listdir(subgroup)
-    #чтение файлов
+    files = os.listdir(subgroup)    
+
     for file_aln in files:
         if 'seq_num' in file_aln:
             
-            matrix_aln_name = []     #для записи имен белков
-            matrix_aln_prot = []     #для записи всех белков под именами
-            matrix_aln_prot2 = str() #для накопления одной белковой последовательности
+            matrix_aln_name = []
+            matrix_aln_prot = []
+            matrix_aln_prot2 = str()
         
-            file_aln_opened = open (subgroup + file_aln)        
-            for line_file_aln in file_aln_opened:            
-                if '>' in line_file_aln:  #если то записать имя и накопленный белок
+            file_aln_opened = open (subgroup + file_aln)
+            for line_file_aln in file_aln_opened:
+                if '>' in line_file_aln:
                     matrix_aln_name += [line_file_aln.strip()]
                     matrix_aln_prot += [matrix_aln_prot2]
                     matrix_aln_prot2 = str()                
                 else:
-                    matrix_aln_prot2 += line_file_aln.strip() #иначе накопить                
+                    matrix_aln_prot2 += line_file_aln.strip()               
 
-            matrix_aln_prot += [matrix_aln_prot2] #для последнего
+            matrix_aln_prot += [matrix_aln_prot2]
             matrix_aln_prot.pop(0)       
             file_aln_opened.close()
 
@@ -410,9 +396,6 @@ def entropy_calculate(subgroup):
             report_entropy_stat.write (file_aln + ',' + str(round(mean_entropy,5)) + ',' + str(round(sum_entropy,5)) + '\n')
             report_entropy_stat.close()
         
-            
-#=============================================================================================
-#алгоритмм для нахождение общих белков по парно между протеомами
 
 def common (direct):
     into_list = list()
@@ -437,7 +420,6 @@ def common (direct):
     
         sum_list.append(sum_count)
                 
-#перечисляет номера и если белок есть и перебирает строки с белками
     common = str()
     common_line = str()
 
@@ -455,7 +437,7 @@ def common (direct):
             common_line += ',' + str( round(common_count) ) #Убери деление будут числа а не проценты
 
         
-        #common += ',' + str(common_line) + '\n'       
+               
         common_line +=  '\n'
     
     report_common2 = open (direct + 'report_common2.csv','w')
