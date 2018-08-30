@@ -3,9 +3,11 @@ print('start selseq_extra')
 from selseq_constant import *
 from selseq_main import SequenceFasta
 
-def generator_fasta(directory,type_fasta='faa',type_output=None,fun=None):
-    '''
+def nothing(obj):    
+    return obj
 
+def generator_fasta2(directory,type_fasta='faa',type_output=None,fun=None):
+    '''
     '''
     #global fasta  
     files = os.listdir(directory)
@@ -13,13 +15,24 @@ def generator_fasta(directory,type_fasta='faa',type_output=None,fun=None):
         if file.endswith(type_fasta):
             fasta = SequenceFasta(directory+file)
             fasta.seq_process(strip=True)
-
-
     for ind in range(fasta.seq_len):
         #yield ind
         yield fasta
 
-class generator_fasta():
+def generator_fasta(directory,type_fasta='faa',fun=nothing,type_output=None):
+    '''
+    '''
+    #global fasta  
+    files = os.listdir(directory)
+    for file in files:
+        if file.endswith(type_fasta):
+            fasta = SequenceFasta(directory+file)
+            fasta.seq_process(strip=True)
+            yield fun(fasta)
+
+    
+
+class generator_fasta3():
 
     def __init__(self,directory,type_fasta='faa'):
         self.directory = directory
@@ -37,8 +50,8 @@ class generator_fasta():
 
         
 
-
-for ind in generator_fasta(REDATA_DIRECTORY).generator_index():    
-    print(ind)
+if __name__ == '__main__':
+    for f in generator_fasta(REDATA_DIRECTORY):    
+        print(f)
 
 print('end selseq_extra')
