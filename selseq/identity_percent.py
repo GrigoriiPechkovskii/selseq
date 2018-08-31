@@ -6,7 +6,8 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
 from sklearn.cluster import KMeans
-
+import re
+import subprocess
 #from selseq_extra import * 
 
 directory_files = os.listdir(ALNDATA_DIRECTORY)
@@ -21,6 +22,8 @@ def calculate_identity_percent(aln_file,itself=True):
        itself - parametr for calculate identity percent the alone sequence
     '''
     global identity_matrix
+    global data_persent
+
     aln_file = SequenceFasta(aln_file)
     aln_file.seq_process(strip=False)
     data_persent = pd.Series()
@@ -55,8 +58,11 @@ def calculate_identity_percent(aln_file,itself=True):
                 identity_matrix[seq_1][seq_2] = identical / len(aln_file.seq_lst[seq_id_1]) * 100
                 identity_matrix[seq_2][seq_1] = identical / len(aln_file.seq_lst[seq_id_1]) * 100
                 identical = 0
+        aln_file.data_persent = data_persent
+        aln_file.identity_matrix = identity_matrix
+        
         #print(identity_matrix)
-        return identity_matrix
+        return aln_file
         #return data_persent
 
 def enumeration_aln(directory_files,fun):
@@ -70,18 +76,36 @@ def enumeration_aln(directory_files,fun):
 def enumeration_aln2(directory_files):    
     for file in directory_files:
         if file.endswith('.aln'):
-            calculate_identity_percent(ALNDATA_DIRECTORY + file,itself=False)
-            if identity_matrix.shape != (1,1):
-                #print(identity_matrix)                
-                
-                
-                kmeans = KMeans(n_clusters=2)
-                kmeans.fit(identity_matrix)
-                y_kmeans = kmeans.predict(identity_matrix)
-                print(y_kmeans)
             
-    
+            aln_file = calculate_identity_percent(ALNDATA_DIRECTORY + file,itself=False)
+            print(aln_file.file_dir)
+            if identity_matrix.shape != (1,1):
+                #print(identity_matrix)           
+                #print(aln_file.file_dir)
+                print(aln_file.data_persent.sort_values(ascending=False,inplace=False))                
 
+                if any(aln_file.data_persent<60):
+                    kmeans = KMeans(n_clusters=2)
+                    kmeans.fit(identity_matrix)
+                    y_kmeans = kmeans.predict(identity_matrix)
+
+                    print(identity_matrix.index)  
+                    print(y_kmeans)
+                    muscle_list = []
+                    for kmeans_index in range(len(y_kmeans)):
+                        if y_kmeans[kmeans_index] == 0:
+                            with open(aln_file.file_dir[0:-4] + '_0','a') as aln_clustered: #del .aln
+                                muscle_list.append(aln_file.file_dir[0:-4] + '_0')
+                                aln_clustered.write(aln_file.name_lst[kmeans_index] + aln_file.seq_lst[kmeans_index].replace('-','').replace('\n','') + '\n')
+                        
+                        elif y_kmeans[kmeans_index] == 1:                            
+                            with open(aln_file.file_dir[0:-4] + '_1','a') as aln_clustered: #del .aln
+                                muscle_list.append(aln_file.file_dir[0:-4] + '_1')
+                                aln_clustered.write(aln_file.name_lst[kmeans_index] + aln_file.seq_lst[kmeans_index].replace('-','').replace('\n','') + '\n')
+                        
+                    for seq_file in muscle_list:
+                        subprocess.call('muscle ' + '-in ' +seq_file + ' -out ' + seq_file + '.aln 2>' + HOME_DIRECTORY + '111',shell = True)    
+                    #print(aln_file.seq_lst[kmeans_index])
 enumeration_aln2(directory_files)
 #data = enumeration_aln(directory_files,calculate_identity_percent)
 
