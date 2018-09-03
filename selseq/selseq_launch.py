@@ -85,13 +85,13 @@ plt.hist(data_persent_for_plot.values, bins=100, alpha=1,color='blue',edgecolor=
 plt.savefig(ALNDATA_DIRECTORY + 'data_persent_for_plot_before.png', fmt='png')
 plt.show()
 
-
+'''
 data_persent_for_plot = clustering_aln(ALNDATA_DIRECTORY)
 print(len(data_persent_for_plot))
 plt.hist(data_persent_for_plot.values, bins=100, alpha=1,color='blue',edgecolor='black')
 plt.savefig(ALNDATA_DIRECTORY + 'data_persent_for_plot_after.png', fmt='png')
 plt.show()
-
+'''
 print(len(plt_dic))
 plt_dic = pd.Series(plt_dic)
 plt.hist(plt_dic.values, bins=100, alpha=1,color='blue',edgecolor='black')
