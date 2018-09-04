@@ -5,7 +5,7 @@ from selseq_constant import *
 from selseq_main import *
 from parsing_blast_tbl import *
 import selseq_control as selseq_control
-from identity_percent import *
+from selseq_clustering import *
 
 
 print('start __main__')
@@ -78,26 +78,33 @@ make_group_muscle(group_HOME_DIRECTORY)
 
 selseq_control.timecheck('mucsle')
 
+data_persent_for_plot_before = enumeration_identity_percent(ALNDATA_DIRECTORY)
 
-data_persent_for_plot = clustering_aln(ALNDATA_DIRECTORY)
-print(len(data_persent_for_plot))
-plt.hist(data_persent_for_plot.values, bins=100, alpha=1,color='blue',edgecolor='black')
+clustering_aln(ALNDATA_DIRECTORY)
+
+data_persent_for_plot_after = enumeration_identity_percent(ALNDATA_DIRECTORY)
+
+selseq_control.timecheck('clustering_aln')
+
+
+
+print(len(data_persent_for_plot_before))
+plt.hist(data_persent_for_plot_before.values, bins=100, alpha=1,color='blue',edgecolor='black')
 plt.savefig(ALNDATA_DIRECTORY + 'data_persent_for_plot_before.png', fmt='png')
 plt.show()
 
-'''
-data_persent_for_plot = clustering_aln(ALNDATA_DIRECTORY)
-print(len(data_persent_for_plot))
-plt.hist(data_persent_for_plot.values, bins=100, alpha=1,color='blue',edgecolor='black')
+
+
+print(len(data_persent_for_plot_after))
+plt.hist(data_persent_for_plot_after.values, bins=100, alpha=1,color='blue',edgecolor='black')
 plt.savefig(ALNDATA_DIRECTORY + 'data_persent_for_plot_after.png', fmt='png')
 plt.show()
-'''
+
 print(len(plt_dic))
-plt_dic = pd.Series(plt_dic)
-plt.hist(plt_dic.values, bins=100, alpha=1,color='blue',edgecolor='black')
+data_persent_for_plot_blast = pd.Series(plt_dic)
+plt.hist(data_persent_for_plot_blast.values, bins=100, alpha=1,color='blue',edgecolor='black')
+plt.savefig(ALNDATA_DIRECTORY + 'data_persent_for_plot_blast.png', fmt='png')
 plt.show()
-#print(plt_dic)
-plt.savefig(ALNDATA_DIRECTORY + 'data_persent_for_plot_after2.png', fmt='png')
 
 
 #===================================================================              
@@ -112,7 +119,7 @@ common (ALNDATA_DIRECTORY)
 selseq_control.timecheck('calculate')
 #=============================================================================================
 
-#Cp = selseq_control.Control(REDATA_DIRECTORY,ALNDATA_DIRECTORY)
-#Cp.doControl()
+Cp = selseq_control.Control(REDATA_DIRECTORY,ALNDATA_DIRECTORY)
+Cp.doControl()
 
 selseq_control.timecheck('control')

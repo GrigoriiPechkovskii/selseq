@@ -30,6 +30,13 @@ def generator_fasta(directory,type_fasta='faa',fun=nothing,type_output=None):
             fasta.seq_process(strip=True)
             yield fun(fasta)
 
+def enumeration_fasta(directory,type_fasta='faa',fun=nothing):
+    '''    '''
+    files = os.listdir(directory)
+    for file in files:
+        if file.endswith(type_fasta):            
+            fun(directory + files)  
+
     
 
 class generator_fasta3():
