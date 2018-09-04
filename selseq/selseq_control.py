@@ -82,15 +82,16 @@ class Control():
         self._checkStartSeq()
         files = os.listdir(self.alndata_dir)
         for aln_file in files:
-            aln_opened = open(self.alndata_dir + aln_file)
-            for aln_line in aln_opened:
-                if '>' in aln_line:
-                    self.endseq_count += 1
-                    self.endseq_list += [aln_line]                    
-                if ('>' in aln_line) and (aln_line not in self.startseq_list):
-                    self.startseq_not_in_end += 1 #
-                    print('startseq_not_in_end = ', aln_line)
-        aln_opened.close()
+            if aln_file.endswith('.aln') or aln_file.endswith('.faa'):
+                aln_opened = open(self.alndata_dir + aln_file)
+                for aln_line in aln_opened:
+                    if '>' in aln_line:
+                        self.endseq_count += 1
+                        self.endseq_list += [aln_line]                    
+                    if ('>' in aln_line) and (aln_line not in self.startseq_list):
+                        self.startseq_not_in_end += 1 #
+                        print('startseq_not_in_end = ', aln_line)
+                aln_opened.close()
                     
     def _loopEndSeq2(self):
         self._loopEndSeq()        
