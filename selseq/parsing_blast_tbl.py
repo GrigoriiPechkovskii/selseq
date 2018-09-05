@@ -11,7 +11,7 @@ print('start tbl_pars_pandas')
 
 full_seq_threshold = pd.Series()
 
-def seq_choice(seq_store_in,percent_range = 3):
+def seq_choice(seq_store_in,percent_range = PERCENT_RANGE):
 	'''Input seq_store_in is pd.Series all sbjct sequence of one query sequence 
 	Output seq_threshold is pd.Series what chosen
 	>>> seq_store_in = pd.Series({'<seq_id>seq_num_9</seq_id><assemble>GCA_2<...': 100,'<seq_id>seq_num_3</seq_id><assemble>GCA_3</assemble>...' : 100,'<seq_id>seq_num_8</seq_id><assemble>GCA_2</assemble>...' : 100})
@@ -20,9 +20,9 @@ def seq_choice(seq_store_in,percent_range = 3):
 	'''	
 	global full_seq_threshold
 	seq_store_in.sort_values(ascending=False,inplace=True)	
-	seq_threshold= seq_store_in[seq_store_in>80]	
+	seq_threshold= seq_store_in[seq_store_in>PERSENT_THRESHHOLD]	
 	seq_store_in = seq_store_in.drop(seq_threshold.index)
-	persent_last = 80
+	persent_last = PERSENT_THRESHHOLD
 	
 	for name,percent in seq_store_in.items():
 		if persent_last - percent <= percent_range:

@@ -6,9 +6,12 @@ print('start programm')
 import os
 import subprocess
 import math
+import matplotlib.pyplot as plt
+import pandas as pd
 import numpy as np
 import re
 from selseq_constant import *
+import selseq_clustering
 
 def make_tags(tags_names,tags_contents,string):
 	'''Adds tags to string and return changed string with tags'''
@@ -175,7 +178,7 @@ def parsing_balst_table(tbl):
     table_opened = open(REDATA_DIRECTORY + tbl, 'r')
     for table_line in table_opened: 
         table_list = table_line.split(',')
-        if float(table_list[2])>80:
+        if float(table_list[2])>PERSENT_THRESHHOLD:
             
             id_list_ref =find_tag('seq_id',table_list[0]) #список полное название референта
             id_list_base =find_tag('seq_id',table_list[1]) #список полное название найденного белка
@@ -233,7 +236,7 @@ def make_muscle(REDATA_DIRECTORY):
         if 'seq_num' in protein_file:
             subprocess.call('muscle ' + '-in ' +REDATA_DIRECTORY + protein_file + ' -out ' + ALNDATA_DIRECTORY + protein_file[0:-4] + '.aln 2>' + HOME_DIRECTORY + '111',shell = True)
 
-def into(direct):
+def into(direct,name='into.csv'):
     home_files = os.listdir(HOME_DIRECTORY)
     prot_count = 0
     matrix_genom = []
@@ -243,8 +246,8 @@ def into(direct):
         if 'GC' in file_genom:
             matrix_genom += [file_genom[0:-4]]
 
-    into = open(direct + 'into.csv', 'w')
-    into.write(',' + ','.join(matrix_genom))
+    into = open(direct + name, 'w')
+    into.write(','.join(matrix_genom))
     into.close()    
     for file_protein in files:
             
@@ -253,7 +256,7 @@ def into(direct):
                 proteom_opened = open(direct + file_protein)
                 proteom = proteom_opened.read()
                 proteom_opened.close()
-                into = open (direct + 'into.csv', 'a')
+                into = open (direct + name, 'a')
                 into.write('\n'+file_protein)
                 for genom in matrix_genom:
                     if genom in proteom:
@@ -327,7 +330,7 @@ def grouping_HOME_DIRECTORY(HOME_DIRECTORY):
 	        group_HOME_DIRECTORY[HOME_DIRECTORY + file_lev1 + '/'] = dir_lst
 	return group_HOME_DIRECTORY
 
-def make_group_muscle(group_HOME_DIRECTORY):
+def make_group_muscle_with_plot(group_HOME_DIRECTORY):
     for group_lst,subgroup_lst in group_HOME_DIRECTORY.items():
         for subgroup in subgroup_lst:
             files = os.listdir(subgroup)
@@ -335,6 +338,11 @@ def make_group_muscle(group_HOME_DIRECTORY):
                 if 'seq_num' in file:
                     subprocess.call('muscle ' + '-in ' +subgroup + file + ' -out ' + subgroup + file[0:-4] + '.aln 2>' + HOME_DIRECTORY + '111',shell = True)
                     #os.remove(subgroup + file)
+                    
+            data_persent_for_plot = selseq_clustering.enumeration_identity_percent(subgroup)
+            
+            plt.hist(data_persent_for_plot.values, bins=100, alpha=1,color='blue',edgecolor='black')
+            plt.savefig(subgroup + 'hist_identity_persent_' + subgroup.rsplit('/',2)[-2] + '.png', fmt='png')
 
 def entropy_calculate(subgroup):
     HOME_DIRECTORY  = os.getcwd()

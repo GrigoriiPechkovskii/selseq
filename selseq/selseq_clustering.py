@@ -1,7 +1,10 @@
 print('start identity_percent')
-from selseq_main import find_tag, SequenceFasta
-import os
+#from selseq_main import *
 from selseq_constant import *
+
+#from selseq_extra import *
+
+import os
 import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
@@ -9,7 +12,7 @@ from sklearn.cluster import KMeans
 import re
 import subprocess
 import shutil
-from selseq_extra import * 
+from selseq_main import *
 
 def clustering_kmeans_aln(aln_file,itself=True):
     '''input file the aligned sequence
@@ -58,7 +61,7 @@ def calculate_identity_percent(aln_file,itself=True):
     identity_matrix = pd.DataFrame()    
 
     if itself and len(aln_file.seq_lst) == 1:        
-        data_persent[find_tag('seq_id',aln_file.name_lst[0])+'and'+find_tag('seq_id',aln_file.name_lst[0])] = 100
+        data_persent[find_tag('seq_id',aln_file.name_lst[0])+'and'+find_tag('seq_id',aln_file.name_lst[0])] = 110
         aln_file.data_persent = data_persent
         identity_matrix = pd.DataFrame([])
         aln_file.identity_matrix = identity_matrix
