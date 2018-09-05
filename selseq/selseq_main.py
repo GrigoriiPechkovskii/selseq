@@ -268,13 +268,13 @@ class Selection():
 
     def __init__(self,group=dict):
         
-        self.files = os.listdir(REDATA_DIRECTORY)
+        self.files = os.listdir(ALNDATA_DIRECTORY)
         self.group = group
         self.seq_num_list = []
         self.seq_direct()
         
     def seq_num_prep(self,file):
-        seq_opened = open(REDATA_DIRECTORY + file)
+        seq_opened = open(ALNDATA_DIRECTORY + file)
         self.seq_num_list = seq_opened.read().split('>')
         self.seq_num_list.pop(0)
         self.seq_num_list = ['>'+i for i in self.seq_num_list]
@@ -285,21 +285,21 @@ class Selection():
             if 'seq_num' in file:
                 #self.seq_num_prep(file)
 
-                omics = SequenceFasta(REDATA_DIRECTORY + file)
+                omics = SequenceFasta(ALNDATA_DIRECTORY + file)
                 omics.seq_process()
-                for index in range(0,len(omics.name_lst)):
-                #for seq_num in self.seq_num_list:
+
+                for index in range(0,len(omics.name_lst)):                    
+                    omics.seq_lst[index] = omics.seq_lst[index].replace('-','').replace('\n','') + '\n'                    
                     for key in self.group:
                         if not os.access(HOME_DIRECTORY + NAME_EXP+'aln_'+ key + '/',os.F_OK):
                             os.mkdir(HOME_DIRECTORY + NAME_EXP+'aln_'+ key + '/') 
                         for val in self.group[key]:
                             if not os.access(HOME_DIRECTORY +NAME_EXP+'aln_'+ key + '/' + 'aln_' + val+ '/',os.F_OK):
-                                os.mkdir(HOME_DIRECTORY +NAME_EXP+'aln_' + key + '/' + 'aln_' + val+ '/')
-                                           
+                                os.mkdir(HOME_DIRECTORY +NAME_EXP+'aln_' + key + '/' + 'aln_' + val+ '/')                                           
                         
-                            if val in omics.name_lst[index]:                                
+                            if val in omics.name_lst[index]:                                                    
                                 seq_group_opened = open(HOME_DIRECTORY +NAME_EXP+'aln_'+ key + '/' +  'aln_' +val + '/' + file,'a')
-                                seq_group_opened.write(omics.name_lst[index] + omics.seq_lst[index])
+                                seq_group_opened.write(omics.name_lst[index] + omics.seq_lst[index])                                
                                 seq_group_opened.close()
                     
 def make_group_dict_for_selection(group_for_selection,group_dict):
@@ -312,7 +312,7 @@ def make_group_dict_for_selection(group_for_selection,group_dict):
                 
     return group_dict_for_selection
 
-def group_HOME_DIRECTORY(HOME_DIRECTORY):                    
+def grouping_HOME_DIRECTORY(HOME_DIRECTORY):                    
 	group_HOME_DIRECTORY = {}
 	HOME_DIRECTORY_lev1 = os.listdir(HOME_DIRECTORY)
 	for file_lev1 in HOME_DIRECTORY_lev1:    
@@ -334,7 +334,7 @@ def make_group_muscle(group_HOME_DIRECTORY):
             for file in files:
                 if 'seq_num' in file:
                     subprocess.call('muscle ' + '-in ' +subgroup + file + ' -out ' + subgroup + file[0:-4] + '.aln 2>' + HOME_DIRECTORY + '111',shell = True)
-                    os.remove(subgroup + file)
+                    #os.remove(subgroup + file)
 
 def entropy_calculate(subgroup):
     HOME_DIRECTORY  = os.getcwd()

@@ -70,17 +70,19 @@ files = os.listdir(REDATA_DIRECTORY)
 
 group_dict_for_selection = make_group_dict_for_selection(group_for_selection,cluster.group_dict)            
 
-sel = Selection(group_dict_for_selection)
-
-group_HOME_DIRECTORY = group_HOME_DIRECTORY(HOME_DIRECTORY)
-
-make_group_muscle(group_HOME_DIRECTORY)                      
+#sel = Selection(group_dict_for_selection)
+#group_HOME_DIRECTORY = grouping_HOME_DIRECTORY(HOME_DIRECTORY)
+#make_group_muscle(group_HOME_DIRECTORY)                      
 
 selseq_control.timecheck('mucsle')
 
 data_persent_for_plot_before = enumeration_identity_percent(ALNDATA_DIRECTORY)
 
 clustering_aln(ALNDATA_DIRECTORY)
+
+sel = Selection(group_dict_for_selection)
+group_HOME_DIRECTORY = grouping_HOME_DIRECTORY(HOME_DIRECTORY)
+make_group_muscle(group_HOME_DIRECTORY)  
 
 data_persent_for_plot_after = enumeration_identity_percent(ALNDATA_DIRECTORY)
 
@@ -91,20 +93,20 @@ selseq_control.timecheck('clustering_aln')
 print(len(data_persent_for_plot_before))
 plt.hist(data_persent_for_plot_before.values, bins=100, alpha=1,color='blue',edgecolor='black')
 plt.savefig(ALNDATA_DIRECTORY + 'data_persent_for_plot_before.png', fmt='png')
-plt.show()
+#plt.show()
 
 
 
 print(len(data_persent_for_plot_after))
 plt.hist(data_persent_for_plot_after.values, bins=100, alpha=1,color='blue',edgecolor='black')
 plt.savefig(ALNDATA_DIRECTORY + 'data_persent_for_plot_after.png', fmt='png')
-plt.show()
+#plt.show()
 
 print(len(plt_dic))
 data_persent_for_plot_blast = pd.Series(plt_dic)
 plt.hist(data_persent_for_plot_blast.values, bins=100, alpha=1,color='blue',edgecolor='black')
 plt.savefig(ALNDATA_DIRECTORY + 'data_persent_for_plot_blast.png', fmt='png')
-plt.show()
+#plt.show()
 
 
 #===================================================================              
