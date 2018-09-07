@@ -6,9 +6,13 @@ print('start programm')
 import os
 import subprocess
 import math
+import matplotlib.pyplot as plt
+import pandas as pd
 import numpy as np
 import re
 from selseq_constant import *
+import selseq_clustering
+import selseq_plot
 
 def make_tags(tags_names,tags_contents,string):
 	'''Adds tags to string and return changed string with tags'''
@@ -175,7 +179,7 @@ def parsing_balst_table(tbl):
     table_opened = open(REDATA_DIRECTORY + tbl, 'r')
     for table_line in table_opened: 
         table_list = table_line.split(',')
-        if float(table_list[2])>80:
+        if float(table_list[2])>PERSENT_THRESHHOLD:
             
             id_list_ref =find_tag('seq_id',table_list[0]) #список полное название референта
             id_list_base =find_tag('seq_id',table_list[1]) #список полное название найденного белка
@@ -215,10 +219,10 @@ def make_tail(REDATA_DIRECTORY):
     prot_save = str()
     name_save = str()
     tail = open(REDATA_DIRECTORY + 'tail', 'a')
-    for file_GCF in files:
-        if 'GCA' in file_GCF:
+    for file in files:
+        if file.endswith('.faa'):
 
-            omics = SequenceFasta(REDATA_DIRECTORY + file_GCF)
+            omics = SequenceFasta(REDATA_DIRECTORY + file)
             omics.seq_process()
             for index in range(0,len(omics.name_lst)):
                if omics.name_lst[index].strip() not in set_aln:
@@ -233,18 +237,18 @@ def make_muscle(REDATA_DIRECTORY):
         if 'seq_num' in protein_file:
             subprocess.call('muscle ' + '-in ' +REDATA_DIRECTORY + protein_file + ' -out ' + ALNDATA_DIRECTORY + protein_file[0:-4] + '.aln 2>' + HOME_DIRECTORY + '111',shell = True)
 
-def into(direct):
+def into(direct,name='into.csv'):
     home_files = os.listdir(HOME_DIRECTORY)
     prot_count = 0
     matrix_genom = []
     files = os.listdir(direct)
         
     for file_genom in home_files:
-        if 'GC' in file_genom:
+        if file_genom.endswith('.faa'):        
             matrix_genom += [file_genom[0:-4]]
 
-    into = open(direct + 'into.csv', 'w')
-    into.write(',' + ','.join(matrix_genom))
+    into = open(direct + name, 'w')
+    into.write(','.join(matrix_genom))
     into.close()    
     for file_protein in files:
             
@@ -253,7 +257,7 @@ def into(direct):
                 proteom_opened = open(direct + file_protein)
                 proteom = proteom_opened.read()
                 proteom_opened.close()
-                into = open (direct + 'into.csv', 'a')
+                into = open (direct + name, 'a')
                 into.write('\n'+file_protein)
                 for genom in matrix_genom:
                     if genom in proteom:
@@ -268,13 +272,13 @@ class Selection():
 
     def __init__(self,group=dict):
         
-        self.files = os.listdir(REDATA_DIRECTORY)
+        self.files = os.listdir(ALNDATA_DIRECTORY)
         self.group = group
         self.seq_num_list = []
         self.seq_direct()
         
     def seq_num_prep(self,file):
-        seq_opened = open(REDATA_DIRECTORY + file)
+        seq_opened = open(ALNDATA_DIRECTORY + file)
         self.seq_num_list = seq_opened.read().split('>')
         self.seq_num_list.pop(0)
         self.seq_num_list = ['>'+i for i in self.seq_num_list]
@@ -285,21 +289,21 @@ class Selection():
             if 'seq_num' in file:
                 #self.seq_num_prep(file)
 
-                omics = SequenceFasta(REDATA_DIRECTORY + file)
+                omics = SequenceFasta(ALNDATA_DIRECTORY + file)
                 omics.seq_process()
-                for index in range(0,len(omics.name_lst)):
-                #for seq_num in self.seq_num_list:
+
+                for index in range(0,len(omics.name_lst)):                    
+                    omics.seq_lst[index] = omics.seq_lst[index].replace('-','').replace('\n','') + '\n'                    
                     for key in self.group:
                         if not os.access(HOME_DIRECTORY + NAME_EXP+'aln_'+ key + '/',os.F_OK):
                             os.mkdir(HOME_DIRECTORY + NAME_EXP+'aln_'+ key + '/') 
                         for val in self.group[key]:
                             if not os.access(HOME_DIRECTORY +NAME_EXP+'aln_'+ key + '/' + 'aln_' + val+ '/',os.F_OK):
-                                os.mkdir(HOME_DIRECTORY +NAME_EXP+'aln_' + key + '/' + 'aln_' + val+ '/')
-                                           
+                                os.mkdir(HOME_DIRECTORY +NAME_EXP+'aln_' + key + '/' + 'aln_' + val+ '/')                                           
                         
-                            if val in omics.name_lst[index]:                                
+                            if val in omics.name_lst[index]:                                                    
                                 seq_group_opened = open(HOME_DIRECTORY +NAME_EXP+'aln_'+ key + '/' +  'aln_' +val + '/' + file,'a')
-                                seq_group_opened.write(omics.name_lst[index] + omics.seq_lst[index])
+                                seq_group_opened.write(omics.name_lst[index] + omics.seq_lst[index])                                
                                 seq_group_opened.close()
                     
 def make_group_dict_for_selection(group_for_selection,group_dict):
@@ -312,7 +316,7 @@ def make_group_dict_for_selection(group_for_selection,group_dict):
                 
     return group_dict_for_selection
 
-def group_HOME_DIRECTORY(HOME_DIRECTORY):                    
+def grouping_HOME_DIRECTORY(HOME_DIRECTORY):                    
 	group_HOME_DIRECTORY = {}
 	HOME_DIRECTORY_lev1 = os.listdir(HOME_DIRECTORY)
 	for file_lev1 in HOME_DIRECTORY_lev1:    
@@ -327,14 +331,19 @@ def group_HOME_DIRECTORY(HOME_DIRECTORY):
 	        group_HOME_DIRECTORY[HOME_DIRECTORY + file_lev1 + '/'] = dir_lst
 	return group_HOME_DIRECTORY
 
-def make_group_muscle(group_HOME_DIRECTORY):
+def make_group_muscle_with_plot(group_HOME_DIRECTORY):
     for group_lst,subgroup_lst in group_HOME_DIRECTORY.items():
         for subgroup in subgroup_lst:
             files = os.listdir(subgroup)
             for file in files:
                 if 'seq_num' in file:
                     subprocess.call('muscle ' + '-in ' +subgroup + file + ' -out ' + subgroup + file[0:-4] + '.aln 2>' + HOME_DIRECTORY + '111',shell = True)
-                    os.remove(subgroup + file)
+                    #os.remove(subgroup + file)
+                    
+            data_persent_for_plot = selseq_clustering.enumeration_identity_percent(subgroup)
+            
+            selseq_plot.plot_hist_frequency(data_persent_for_plot.values[data_persent_for_plot.values != 110],
+                    subgroup,'data_persent_for_plot.png')
 
 def entropy_calculate(subgroup):
     HOME_DIRECTORY  = os.getcwd()
@@ -403,13 +412,15 @@ def common (direct):
     intotbl_opened = open(direct + 'into.csv')
     #открывает таблицу вхождения белков и зписывает их в список
     prot_sum = 0
+    flag = True
     for into_line in intotbl_opened:
-        if 'GCA' in into_line:
+        if flag:
             into_list_proteom += into_line.strip().split(',')
+            flag = False
         else:
             into_list += [into_line.strip().split(',')]
             prot_sum += 1
-    del into_list_proteom[0]  
+    #del into_list_proteom[0]  
     
     sum_list = list()
 

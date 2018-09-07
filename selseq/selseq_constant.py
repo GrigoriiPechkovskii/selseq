@@ -5,9 +5,11 @@ import sys
 
 NAME_EXP = 'LIN_Experemen1_'
 TABLE_CSV = 'group_table_virus.csv'
-QUERY_SEQ = 'GCA_InfluenzaA1.faa'
+QUERY_SEQ = 'InfluenzaA1.faa'
 GROUP_TAG = ['Group']
 group_for_selection = ['Group']
+PERCENT_RANGE  = 5
+PERSENT_THRESHHOLD = 70
 
 if sys.platform == 'linux':
 	#Linux
