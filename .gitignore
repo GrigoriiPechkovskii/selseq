@@ -8,9 +8,9 @@ test_mini/*
 !group_table.csv
 #for test virus
 test_virus/*
-!test_virus/GCA_InfluenzaA1.faa
-!test_virus/GCA_InfluenzaA2.faa
-!test_virus/GCA_InfluenzaA3.faa
+!test_virus/InfluenzaA1.faa
+!test_virus/InfluenzaA2.faa
+!test_virus/InfluenzaA3.faa
 !test_virus/group_table_virus.csv
 
 # Byte-compiled / optimized / DLL files
