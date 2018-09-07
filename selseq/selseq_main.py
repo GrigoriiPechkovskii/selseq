@@ -219,10 +219,10 @@ def make_tail(REDATA_DIRECTORY):
     prot_save = str()
     name_save = str()
     tail = open(REDATA_DIRECTORY + 'tail', 'a')
-    for file_GCF in files:
-        if 'GCA' in file_GCF:
+    for file in files:
+        if file.endswith('.faa'):
 
-            omics = SequenceFasta(REDATA_DIRECTORY + file_GCF)
+            omics = SequenceFasta(REDATA_DIRECTORY + file)
             omics.seq_process()
             for index in range(0,len(omics.name_lst)):
                if omics.name_lst[index].strip() not in set_aln:
@@ -244,7 +244,7 @@ def into(direct,name='into.csv'):
     files = os.listdir(direct)
         
     for file_genom in home_files:
-        if 'GC' in file_genom:
+        if file_genom.endswith('.faa'):        
             matrix_genom += [file_genom[0:-4]]
 
     into = open(direct + name, 'w')
@@ -412,13 +412,15 @@ def common (direct):
     intotbl_opened = open(direct + 'into.csv')
     #открывает таблицу вхождения белков и зписывает их в список
     prot_sum = 0
+    flag = True
     for into_line in intotbl_opened:
-        if 'GCA' in into_line:
+        if flag:
             into_list_proteom += into_line.strip().split(',')
+            flag = False
         else:
             into_list += [into_line.strip().split(',')]
             prot_sum += 1
-    del into_list_proteom[0]  
+    #del into_list_proteom[0]  
     
     sum_list = list()
 
