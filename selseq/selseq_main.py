@@ -12,6 +12,7 @@ import numpy as np
 import re
 from selseq_constant import *
 import selseq_clustering
+import selseq_plot
 
 def make_tags(tags_names,tags_contents,string):
 	'''Adds tags to string and return changed string with tags'''
@@ -341,8 +342,8 @@ def make_group_muscle_with_plot(group_HOME_DIRECTORY):
                     
             data_persent_for_plot = selseq_clustering.enumeration_identity_percent(subgroup)
             
-            plt.hist(data_persent_for_plot.values, bins=100, alpha=1,color='blue',edgecolor='black')
-            plt.savefig(subgroup + 'hist_identity_persent_' + subgroup.rsplit('/',2)[-2] + '.png', fmt='png')
+            selseq_plot.plot_hist_frequency(data_persent_for_plot.values[data_persent_for_plot.values != 110],
+                    subgroup,'data_persent_for_plot.png')
 
 def entropy_calculate(subgroup):
     HOME_DIRECTORY  = os.getcwd()

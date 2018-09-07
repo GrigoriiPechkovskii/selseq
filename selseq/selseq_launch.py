@@ -5,7 +5,7 @@ from selseq_clustering import *
 from selseq_main import *
 from parsing_blast_tbl import *
 import selseq_control as selseq_control
-from selseq_plot import plot_hist_frequency_into
+from selseq_plot import *
 
 
 print('start __main__')
@@ -62,6 +62,7 @@ selseq_control.timecheck('mucsle')
 
 into(ALNDATA_DIRECTORY,name='into_before.csv')
 plot_hist_frequency_into(ALNDATA_DIRECTORY,'into_before.csv',name_plot=ALNDATA_DIRECTORY.rsplit('/',2)[-2]+'_plot_into_before.png')       
+plot_hist_frequency_into_pie_chart(ALNDATA_DIRECTORY,'into_before.csv',name_plot=ALNDATA_DIRECTORY.rsplit('/',2)[-2]+'_plot_into_before.png')       
 
 selseq_control.timecheck('into')
 
@@ -92,25 +93,21 @@ selseq_control.timecheck('clustering_aln')
 
 
 print(len(data_persent_for_plot_before))
-fig = plt.figure()
-plt.hist(data_persent_for_plot_before.values[data_persent_for_plot_before.values != 110], bins=100, alpha=1,color='blue',edgecolor='black')
-plt.savefig(ALNDATA_DIRECTORY + 'data_persent_for_plot_before.png', fmt='png')
-#plt.show()
-
-
+plot_hist_frequency(data_persent_for_plot_before.values[data_persent_for_plot_before.values != 110],
+                    ALNDATA_DIRECTORY,'data_persent_for_plot_before.png')
 
 print(len(data_persent_for_plot_after))
-fig = plt.figure()
-plt.hist(data_persent_for_plot_after.values[data_persent_for_plot_after.values != 110], bins=100, alpha=1,color='blue',edgecolor='black')
-plt.savefig(ALNDATA_DIRECTORY + 'data_persent_for_plot_after.png', fmt='png')
-#plt.show()
+plot_hist_frequency(data_persent_for_plot_after.values[data_persent_for_plot_after.values != 110],
+                    ALNDATA_DIRECTORY,'data_persent_for_plot_after.png')
+
+plot_hist_frequency_for_two(data_persent_for_plot_before.values[data_persent_for_plot_before.values != 110],
+                    data_persent_for_plot_after.values[data_persent_for_plot_after.values != 110],
+                    ALNDATA_DIRECTORY,'data_persent_for_plot_befor_and_after.png')
 
 print(len(plt_dic))
-fig = plt.figure()
 data_persent_for_plot_blast = pd.Series(plt_dic)
-plt.hist(data_persent_for_plot_blast.values[data_persent_for_plot_blast.values != 100], bins=100, alpha=1,color='blue',edgecolor='black')
-plt.savefig(ALNDATA_DIRECTORY + 'data_persent_for_plot_blast.png', fmt='png')
-#plt.show()
+plot_hist_frequency(data_persent_for_plot_blast.values[data_persent_for_plot_blast.values != 100],
+                    ALNDATA_DIRECTORY,'data_persent_for_plot_blast.png')
 
 
 #===================================================================              
@@ -118,10 +115,15 @@ for group_lst,subgroup_lst in group_HOME_DIRECTORY.items():
     for subgroup in subgroup_lst:
         into(subgroup)
         plot_hist_frequency_into(subgroup,'into.csv',name_plot=subgroup.rsplit('/',2)[-2]+'_plot_into.png')
+        plot_hist_frequency_into_pie_chart(subgroup,'into.csv',name_plot=subgroup.rsplit('/',2)[-2]+'_plot_pie_into.png')
         entropy_calculate(subgroup)
         common (subgroup)
-into(ALNDATA_DIRECTORY) 
+into(ALNDATA_DIRECTORY)
+
 plot_hist_frequency_into(ALNDATA_DIRECTORY,'into.csv',name_plot=ALNDATA_DIRECTORY.rsplit('/',2)[-2]+'_plot_into.png')       
+
+plot_hist_frequency_into_pie_chart(ALNDATA_DIRECTORY,'into.csv',name_plot=ALNDATA_DIRECTORY.rsplit('/',2)[-2]+'_plot_pie_into.png')       
+
 entropy_calculate(ALNDATA_DIRECTORY)
 common (ALNDATA_DIRECTORY)
 selseq_control.timecheck('calculate')
