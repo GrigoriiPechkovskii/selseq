@@ -132,7 +132,11 @@ def UnpackCluster(lst):
         val_str += ',' + val#Note splitter
     return val_str.strip(',')
 
-def rename_fasta(files,cluster_dic):     
+#seq_locate = {} #for locate fasta file
+
+def rename_fasta(files,cluster_dic):
+    global  seq_locate 
+    #set_seq = set()#for locate fasta file  
     num = 0
     for file_name in files:
         if '.faa' in file_name:
@@ -142,12 +146,18 @@ def rename_fasta(files,cluster_dic):
                 if '>' in file_line:
                     num += 1
                     string = '>'
-                    file_line = make_tags(['seq_id','assemble','main','cluster_tag'],['seq_num_' + str(num),file_name[0:-4],file_line.strip('>\n'),UnpackCluster(cluster_dic[file_name[0:-4]])],string) + '\n' 
+                    file_line = make_tags(['seq_id','assemble','','main','cluster_tag'],['seq_num_' + str(num),file_name[0:-4],' ',file_line.strip('>\n'),UnpackCluster(cluster_dic[file_name[0:-4]])],string) + '\n' 
+                    
+                    #set_seq.add('seq_num_' + str(num))#for locate fasta file
                     #file_line2 ='>' + 'seq_num_' + str(num) + '<'+ file_name[0:-4]+ '<' + file_line.strip('>\n') + '&&&' + UnpackCluster(cluster.cluster_dic[file_name[0:-4]])+'\n'  #внимание на разделитель
                     file_reopened.write(file_line)                          
 
                 else:
                    file_reopened.write(file_line)
+
+            #seq_locate[file_name[0:-4]] = set_seq#for locate fasta file
+            #set_seq = set()#for locate fasta file
+
             file_opened.close()
             file_reopened.close()
 
