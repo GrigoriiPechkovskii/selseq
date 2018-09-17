@@ -61,8 +61,8 @@ make_muscle(REDATA_DIRECTORY)
 selseq_control.timecheck('mucsle')
 
 into(ALNDATA_DIRECTORY,name='into_before.csv')
-plot_hist_frequency_into(ALNDATA_DIRECTORY,'into_before.csv',name_plot=ALNDATA_DIRECTORY.rsplit('/',2)[-2]+'_plot_into_before.png')       
-plot_hist_frequency_into_pie_chart(ALNDATA_DIRECTORY,'into_before.csv',name_plot=ALNDATA_DIRECTORY.rsplit('/',2)[-2]+'_plot_into_before.png')       
+plot_hist_frequency_into(ALNDATA_DIRECTORY,'into_before.csv',name_plot=ALNDATA_DIRECTORY.rsplit(slash,2)[-2]+'_plot_into_before.png')       
+plot_hist_frequency_into_pie_chart(ALNDATA_DIRECTORY,'into_before.csv',name_plot=ALNDATA_DIRECTORY.rsplit(slash,2)[-2]+'_plot_pie_into_before.png')       
 
 selseq_control.timecheck('into')
 
@@ -115,14 +115,14 @@ for group_lst,subgroup_lst in group_HOME_DIRECTORY.items():
     for subgroup in subgroup_lst:
         into(subgroup)
         plot_hist_frequency_into(subgroup,'into.csv',name_plot=subgroup.rsplit('/',2)[-2]+'_plot_into.png')
-        plot_hist_frequency_into_pie_chart(subgroup,'into.csv',name_plot=subgroup.rsplit('/',2)[-2]+'_plot_pie_into.png')
+        plot_hist_frequency_into_pie_chart(subgroup,'into.csv',name_plot=subgroup.rsplit(slash,2)[-2]+'_plot_pie_into.png')
         entropy_calculate(subgroup)
         common (subgroup)
 into(ALNDATA_DIRECTORY)
 
-plot_hist_frequency_into(ALNDATA_DIRECTORY,'into.csv',name_plot=ALNDATA_DIRECTORY.rsplit('/',2)[-2]+'_plot_into.png')       
+plot_hist_frequency_into(ALNDATA_DIRECTORY,'into.csv',name_plot=ALNDATA_DIRECTORY.rsplit(slash,2)[-2]+'_plot_into.png')       
 
-plot_hist_frequency_into_pie_chart(ALNDATA_DIRECTORY,'into.csv',name_plot=ALNDATA_DIRECTORY.rsplit('/',2)[-2]+'_plot_pie_into.png')       
+plot_hist_frequency_into_pie_chart(ALNDATA_DIRECTORY,'into.csv',name_plot=ALNDATA_DIRECTORY.rsplit(slash,2)[-2]+'_plot_pie_into.png')       
 
 entropy_calculate(ALNDATA_DIRECTORY)
 common (ALNDATA_DIRECTORY)
@@ -132,4 +132,5 @@ selseq_control.timecheck('calculate')
 Cp = selseq_control.Control(REDATA_DIRECTORY,ALNDATA_DIRECTORY)
 Cp.doControl()
 
+print(seq_locate)
 selseq_control.timecheck('control')

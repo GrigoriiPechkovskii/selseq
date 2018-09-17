@@ -20,6 +20,7 @@ if sys.platform == 'linux':
 	REDATA_DIRECTORY = HOME_DIRECTORY + NAME_EXP +'redata/'
 	ALNDATA_DIRECTORY = HOME_DIRECTORY + NAME_EXP +'alndata/'
 	TABLE_CSV = HOME_DIRECTORY + TABLE_CSV
+	slash = '/'
 
 if sys.platform == 'win32':
 	#Windows
@@ -28,5 +29,5 @@ if sys.platform == 'win32':
 	REDATA_DIRECTORY = HOME_DIRECTORY + NAME_EXP +'redata\\'
 	ALNDATA_DIRECTORY = HOME_DIRECTORY + NAME_EXP +'alndata\\'
 	TABLE_CSV = HOME_DIRECTORY + TABLE_CSV
-
+	slash = '\\'
 HOME_FILES = os.listdir(HOME_DIRECTORY)
