@@ -135,7 +135,7 @@ def UnpackCluster(lst):
 #seq_locate = {} #for locate fasta file
 
 def rename_fasta(files,cluster_dic):
-    global  seq_locate 
+    #global  seq_locate #for locate fasta file
     #set_seq = set()#for locate fasta file  
     num = 0
     for file_name in files:
@@ -172,15 +172,44 @@ def joining_files(files,REDATA_DIRECTORY):
             file_opened.close()
             file_reopened.close()
 
-def blast(DB,QUERY_SEQ,OUT_BD,OUT_TBL):
+def blast(DB,QUERY_SEQ,OUT_BD,OUT_TBL,DIRECTORY=REDATA_DIRECTORY):
 
     if sys.platform == 'linux':
-        subprocess.call('/home/grigoriipechkovskii/bio/ncbi-blast-2.7.1+/bin/makeblastdb -in '+ REDATA_DIRECTORY + DB + ' -dbtype prot -out ' + REDATA_DIRECTORY + OUT_BD + ' >' + HOME_DIRECTORY + '111',stdout=subprocess.PIPE,shell=True)
-        subprocess.call('/home/grigoriipechkovskii/bio/ncbi-blast-2.7.1+/bin/blastp -db '+ REDATA_DIRECTORY + OUT_BD + ' -query '+ REDATA_DIRECTORY + QUERY_SEQ + ' -out '+ REDATA_DIRECTORY + OUT_TBL + ' -outfmt 10 -evalue 0.001 2>' + HOME_DIRECTORY + '111', shell=True)
+        subprocess.call('/home/grigoriipechkovskii/bio/ncbi-blast-2.7.1+/bin/makeblastdb -in '+ DIRECTORY + DB + ' -dbtype prot -out ' + DIRECTORY + OUT_BD + ' >' + HOME_DIRECTORY + '111',stdout=subprocess.PIPE,shell=True)
+        subprocess.call('/home/grigoriipechkovskii/bio/ncbi-blast-2.7.1+/bin/blastp -db '+ DIRECTORY + OUT_BD + ' -query '+ DIRECTORY + QUERY_SEQ + ' -out '+ DIRECTORY + OUT_TBL + ' -outfmt 10 -evalue 0.001 2>' + HOME_DIRECTORY + '111', shell=True)
     
     if sys.platform == 'win32':    
-        subprocess.call('makeblastdb -in '+ REDATA_DIRECTORY + DB + ' -dbtype prot -out ' + REDATA_DIRECTORY + OUT_BD +' >' + HOME_DIRECTORY + '111',stdout=subprocess.PIPE,shell=True)
-        subprocess.call('blastp -db '+ REDATA_DIRECTORY + OUT_BD + ' -query '+ REDATA_DIRECTORY + QUERY_SEQ + ' -out '+ REDATA_DIRECTORY + OUT_TBL +' -outfmt 10 -evalue 0.001 2>' + HOME_DIRECTORY + '111', shell=True)
+        subprocess.call('makeblastdb -in '+ DIRECTORY + DB + ' -dbtype prot -out ' + DIRECTORY + OUT_BD +' >' + HOME_DIRECTORY + '111',stdout=subprocess.PIPE,shell=True)
+        subprocess.call('blastp -db '+ DIRECTORY + OUT_BD + ' -query '+ DIRECTORY + QUERY_SEQ + ' -out '+ DIRECTORY + OUT_TBL +' -outfmt 10 -evalue 0.001 2>' + HOME_DIRECTORY + '111', shell=True)
+
+def db_for_blast(assemble_files,name):
+    '''Make faa file from assemble for total blast'''
+    
+    with open(REDATA_DIRECTORY + name + '.faa','a') as join_assemble:
+        for file in assemble_files:
+            
+            with open(REDATA_DIRECTORY+file,'r') as assemble_file_opened:
+                assemble_file_read = assemble_file_opened.read()
+                join_assemble.write(assemble_file_read)
+
+    path_join_assemble = REDATA_DIRECTORY + name + '.faa'
+    return path_join_assemble 
+                #join_assemble.remove()
+
+def blast_total():
+    n = 0
+    for index in range(len(ASSEMBLE_FILES)):    
+        n+=1
+        print(ASSEMBLE_FILES[0])    
+        path_assemble = db_for_blast(ASSEMBLE_FILES,'join_assemble' + str(n))
+        name_assemble = os.path.basename(path_assemble)
+        #blast()
+        blast(name_assemble,ASSEMBLE_FILES[0],name_assemble[0:-4] + '_db',name_assemble[0:-4] + '_tbl.csv')
+        os.remove(REDATA_DIRECTORY + name_assemble[0:-4] + '_db.phr')
+        os.remove(REDATA_DIRECTORY + name_assemble[0:-4] + '_db.pin')
+        os.remove(REDATA_DIRECTORY +name_assemble[0:-4] + '_db.psq')
+        os.remove(REDATA_DIRECTORY +name_assemble)
+        ASSEMBLE_FILES.pop(0)
 
 def parsing_balst_table(tbl):
     

@@ -34,8 +34,8 @@ joining_files(HOME_FILES,REDATA_DIRECTORY)
 
 selseq_control.timecheck('beforblast')
 
-blast('joint_file',QUERY_SEQ, 'blastdb','tbl.csv')
-
+#blast('joint_file',QUERY_SEQ, 'blastdb','tbl.csv')
+blast_total()
 selseq_control.timecheck('blast')
 
 parsing_blast('tbl.csv')
@@ -132,5 +132,5 @@ selseq_control.timecheck('calculate')
 Cp = selseq_control.Control(REDATA_DIRECTORY,ALNDATA_DIRECTORY)
 Cp.doControl()
 
-print(seq_locate)
+
 selseq_control.timecheck('control')

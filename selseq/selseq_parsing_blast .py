@@ -119,11 +119,11 @@ class ParsingBlast():
                 assemble_fasta.seq_process()
                 for index in range(len(assemble_fasta.name_lst)):
                     if sbjct_id == find_tag('seq_id',assemble_fasta.name_lst[index]):                    
-                        with open(REDATA_DIRECTORY + id_query,'a') as new_fasta:
+                        with open(REDATA_DIRECTORY + id_query + '.faa','a') as new_fasta:
                                 new_fasta.write(assemble_fasta.name_lst[index] + assemble_fasta.seq_lst[index])
             
                 
-pt = ParsingBlast(*['tbl.csv','tbltail.csv'])
+pt = ParsingBlast(*['join_assemble1_tbl.csv','join_assemble2_tbl.csv','join_assemble3_tbl.csv'])
 pt.parsing_with_union()
 pt.distribution()
     

@@ -31,3 +31,5 @@ if sys.platform == 'win32':
 	TABLE_CSV = HOME_DIRECTORY + TABLE_CSV
 	slash = '\\'
 HOME_FILES = os.listdir(HOME_DIRECTORY)
+
+ASSEMBLE_FILES = [file for file in HOME_FILES if file.endswith('.faa')]
