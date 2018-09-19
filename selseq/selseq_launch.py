@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 from selseq_constant import *
-
 from selseq_clustering import *
 from selseq_main import *
 from parsing_blast_tbl import *

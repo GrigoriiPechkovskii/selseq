@@ -1,12 +1,12 @@
 print('start identity_percent')
 #from selseq_main import *
-from selseq_constant import *
+#from selseq_constant import *
 
 #from selseq_extra import *
 
 import os
-import matplotlib.pyplot as plt
 import pandas as pd
+import matplotlib.pyplot as plt
 import numpy as np
 from sklearn.cluster import KMeans
 import re
