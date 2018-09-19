@@ -34,7 +34,7 @@ def blast_total():
         os.remove(REDATA_DIRECTORY +name_assemble)
         ASSEMBLE_FILES.pop(0)
 
-if __name__ = '__main__':
+if __name__ == '__main__':
     blast_total()
 
 print('end selseq_blast')

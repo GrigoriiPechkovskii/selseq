@@ -122,10 +122,10 @@ class ParsingBlast():
                         with open(REDATA_DIRECTORY + id_query + '.faa','a') as new_fasta:
                                 new_fasta.write(assemble_fasta.name_lst[index] + assemble_fasta.seq_lst[index])
             
-                
-pt = ParsingBlast(*['join_assemble1_tbl.csv','join_assemble2_tbl.csv','join_assemble3_tbl.csv'])
-pt.parsing_with_union()
-pt.distribution()
+if __name__ == '__main__':             
+    pb = ParsingBlast(*['join_assemble1_tbl.csv','join_assemble2_tbl.csv','join_assemble3_tbl.csv'])
+    pb.parsing_with_union()
+    pb.distribution()
     
 
 

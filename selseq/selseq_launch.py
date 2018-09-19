@@ -6,7 +6,7 @@ from selseq_main import *
 from parsing_blast_tbl import *
 import selseq_control as selseq_control
 from selseq_plot import *
-
+from selseq_parsing_blast import *
 
 print('start __main__')
 
@@ -35,13 +35,18 @@ joining_files(HOME_FILES,REDATA_DIRECTORY)
 selseq_control.timecheck('beforblast')
 
 #blast('joint_file',QUERY_SEQ, 'blastdb','tbl.csv')
-blast_total()
+#blast_total()
+blast_selectively(assemble_query_files)
 selseq_control.timecheck('blast')
 
-parsing_blast('tbl.csv')
+#pb = ParsingBlast(*['join_assemble1_tbl.csv','join_assemble2_tbl.csv','join_assemble3_tbl.csv'])
+pb = ParsingBlast(*['tbl_InfluenzaA1.csv','tbl_InfluenzaA3.csv'])
+pb.parsing_with_union()
+pb.distribution()
+#parsing_blast('tbl.csv')
 #parsing_balst_table('tbl.csv')
 
-selseq_control.timecheck('tbl')
+selseq_control.timecheck('Parsing_tbl')
 
 print('start programm tail')
 
@@ -51,7 +56,10 @@ selseq_control.timecheck('tail')
 
 blast('tail','tail','tailblastdb','tbltail.csv')
 
-parsing_blast('tbltail.csv')
+pbt = ParsingBlast(*['tbltail.csv'])
+pbt.parsing_with_union()
+pbt.distribution()
+#parsing_blast('tbltail.csv')
 #parsing_balst_table('tbltail.csv')
 
 selseq_control.timecheck('blatstltail')

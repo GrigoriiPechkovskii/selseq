@@ -6,8 +6,8 @@ import sys
 NAME_EXP = 'LIN_Experemen1_'
 TABLE_CSV = 'group_table_virus.csv'
 QUERY_SEQ = 'InfluenzaA1.faa'
-GROUP_TAG = ['Group']
-group_for_selection = ['Group']
+GROUP_TAG = ['Group1','Group2']
+group_for_selection = ['Group1','Group2']
 PERCENT_RANGE  = 5
 PERSENT_THRESHHOLD = 70
 
