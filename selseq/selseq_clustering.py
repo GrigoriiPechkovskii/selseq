@@ -1,18 +1,11 @@
 print('start identity_percent')
-#from selseq_main import *
-#from selseq_constant import *
-
-#from selseq_extra import *
-
 import os
 import pandas as pd
-import matplotlib.pyplot as plt
 import numpy as np
 from sklearn.cluster import KMeans
-import re
 import subprocess
-import shutil
-from selseq_main import *
+from selseq_main import *#all?
+from selseq_constant import *
 
 def clustering_kmeans_aln(aln_file,itself=True):
     '''input file the aligned sequence

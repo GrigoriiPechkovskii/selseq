@@ -56,7 +56,7 @@ def plot_hist_frequency_for_two(data,data2,directory_to_save,name_plot='plot_fre
 
 #plot_hist_frequency_into_pie_chart(ALNDATA_DIRECTORY,'into.csv',name_plot=ALNDATA_DIRECTORY.rsplit('/',2)[-2]+'_plot_into.png')
 #
-data = np.random.randn(1000)
+#data = np.random.randn(1000)
 #data2 = np.random.randn(1000)
 
 #plot_hist_frequency_into(ALNDATA_DIRECTORY,'into.csv',name_plot=ALNDATA_DIRECTORY.rsplit('/',2)[-2]+'_plot_into.png')

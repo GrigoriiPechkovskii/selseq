@@ -6,13 +6,14 @@ print('start programm')
 import os
 import subprocess
 import math
-import matplotlib.pyplot as plt
-import pandas as pd
+#import matplotlib.pyplot as plt
+#import pandas as pd
 import numpy as np
 import re
 from selseq_constant import *
-import selseq_clustering
-import selseq_plot
+
+import selseq_clustering#move?
+import selseq_plot#move?
 
 def make_tags(tags_names,tags_contents,string):
 	'''Adds tags to string and return changed string with tags'''

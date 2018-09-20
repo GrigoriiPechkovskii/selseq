@@ -6,6 +6,7 @@ import sys
 NAME_EXP = 'LIN_Experemen1_'
 TABLE_CSV = 'group_table_virus.csv'
 QUERY_SEQ = 'InfluenzaA1.faa'
+QUERY_SEQ_LIST = ['tbl_InfluenzaA1.csv','tbl_InfluenzaA3.csv']
 GROUP_TAG = ['Group1','Group2']
 group_for_selection = ['Group1','Group2']
 PERCENT_RANGE  = 5

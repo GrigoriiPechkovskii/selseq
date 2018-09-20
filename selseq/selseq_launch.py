@@ -39,7 +39,7 @@ blast_selectively(assemble_query_files)
 selseq_control.timecheck('blast')
 
 #pb = ParsingBlast(*['join_assemble1_tbl.csv','join_assemble2_tbl.csv','join_assemble3_tbl.csv'])
-pb = ParsingBlast(*['tbl_InfluenzaA1.csv','tbl_InfluenzaA3.csv'])
+pb = ParsingBlast(*QUERY_SEQ_LIST)
 pb.parsing_with_union()
 pb.distribution()
 #parsing_blast('tbl.csv')
@@ -55,9 +55,9 @@ selseq_control.timecheck('tail')
 
 blast('tail','tail','tailblastdb','tbltail.csv')
 
-pbt = ParsingBlast(*['tbltail.csv'])
-pbt.parsing_with_union()
-pbt.distribution()
+#pb = ParsingBlast(*['tbltail.csv'])
+pb.parsing_with_union(*['tbltail.csv'])
+pb.distribution()
 #parsing_blast('tbltail.csv')
 #parsing_balst_table('tbltail.csv')
 

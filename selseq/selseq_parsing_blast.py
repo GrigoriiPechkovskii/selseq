@@ -4,7 +4,7 @@ import numpy as np
 #import matplotlib.pyplot as plt
 import pandas as pd
 import os
-import re
+#import re
 from selseq_constant import *
 from selseq_main import find_tag, SequenceFasta
 
@@ -24,7 +24,8 @@ class ParsingBlast():
         self.choiced_full = dict()
         self.choiced = dict()
         self.sbjct_used = set()
-        self.seq_id_assemble_sbjct = {}   
+        self.seq_id_assemble_sbjct = {}  
+        self.sbjct_id_used = set() 
 
     def parsing_generator(self):
         '''Make a generator wich yield pd.Series one blast sbjct'''
@@ -102,8 +103,10 @@ class ParsingBlast():
             if flag:                
                 self.choiced_full[self.id_query] =choiced[self.id_query]
 
-    def parsing_with_union(self):
-        '''Parsing blast table with using union set'''
+    def parsing_with_union(self,*blast_tbl_add):
+        '''Parsing blast table with using union set'''        
+        if len(blast_tbl_add) > 0:
+            self.blast_tbl = blast_tbl_add 
         for tbl in self.blast_tbl:
             self.tbl = tbl
             for gen in self.parsing_generator():
@@ -115,12 +118,14 @@ class ParsingBlast():
             for sbjct in self.choiced_full[id_query]:
                 sbjct_assemble = find_tag('assemble',sbjct)
                 sbjct_id = find_tag('seq_id',sbjct)
-                assemble_fasta = SequenceFasta(REDATA_DIRECTORY + sbjct_assemble + '.faa')
-                assemble_fasta.seq_process()
-                for index in range(len(assemble_fasta.name_lst)):
-                    if sbjct_id == find_tag('seq_id',assemble_fasta.name_lst[index]):                    
-                        with open(REDATA_DIRECTORY + id_query + '.faa','a') as new_fasta:
-                                new_fasta.write(assemble_fasta.name_lst[index] + assemble_fasta.seq_lst[index])
+                if sbjct_id not in self.sbjct_id_used:                                    
+                    self.sbjct_id_used.add(sbjct_id)
+                    assemble_fasta = SequenceFasta(REDATA_DIRECTORY + sbjct_assemble + '.faa')
+                    assemble_fasta.seq_process()
+                    for index in range(len(assemble_fasta.name_lst)):
+                        if sbjct_id == find_tag('seq_id',assemble_fasta.name_lst[index]):                    
+                            with open(REDATA_DIRECTORY + id_query + '.faa','a') as new_fasta:
+                                    new_fasta.write(assemble_fasta.name_lst[index] + assemble_fasta.seq_lst[index])
             
 if __name__ == '__main__':             
     pb = ParsingBlast(*['join_assemble1_tbl.csv','join_assemble2_tbl.csv','join_assemble3_tbl.csv'])
