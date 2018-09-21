@@ -167,7 +167,7 @@ def joining_files(files,REDATA_DIRECTORY):
     for file_name in files:
         if '.faa' in file_name: #!!!!!
             file_opened = open ( REDATA_DIRECTORY + file_name,'r' )
-            file_reopened = open (REDATA_DIRECTORY + 'joint_file', 'a' )
+            file_reopened = open (REDATA_DIRECTORY + 'joint_file.faa', 'a' )
             var_name_file = file_opened.read()
             file_reopened.write(var_name_file)
             file_opened.close()
@@ -183,12 +183,11 @@ def blast(DB,QUERY_SEQ,OUT_BD,OUT_TBL,DIRECTORY=REDATA_DIRECTORY):
         subprocess.call('makeblastdb -in '+ DIRECTORY + DB + ' -dbtype prot -out ' + DIRECTORY + OUT_BD +' >' + HOME_DIRECTORY + '111',stdout=subprocess.PIPE,shell=True)
         subprocess.call('blastp -db '+ DIRECTORY + OUT_BD + ' -query '+ DIRECTORY + QUERY_SEQ + ' -out '+ DIRECTORY + OUT_TBL +' -outfmt 10 -evalue 0.001 2>' + HOME_DIRECTORY + '111', shell=True)
 
-assemble_query_files = ['InfluenzaA1','InfluenzaA3']
 
 def blast_selectively(assemble_query_files): 
     for assemble_query in assemble_query_files:
-        print ('joint_file',assemble_query+'.faa', 'blastdb_'+assemble_query,'tbl_' + assemble_query + '.csv')
-        blast('joint_file',assemble_query+'.faa', 'blastdb_'+assemble_query,'tbl_' + assemble_query + '.csv')
+        #print ('joint_file.faa',assemble_query+'.faa', 'blastdb_'+assemble_query,'tbl_' + assemble_query + '.csv')
+        blast('joint_file.faa',assemble_query+'.faa', 'blastdb_'+assemble_query,'tbl_' + assemble_query + '.csv')
 
 
 def db_for_blast(assemble_files,name):
@@ -209,7 +208,7 @@ def blast_total():
     n = 0
     for index in range(len(ASSEMBLE_FILES)):    
         n+=1
-        print(ASSEMBLE_FILES[0])    
+        #print(ASSEMBLE_FILES[0])    
         path_assemble = db_for_blast(ASSEMBLE_FILES,'join_assemble' + str(n))
         name_assemble = os.path.basename(path_assemble)
         #blast()
@@ -355,7 +354,7 @@ class Selection():
                                 seq_group_opened.close()
                     
 def make_group_dict_for_selection(group_for_selection,group_dict):
-    global a
+    #global a
     group_dict_for_selection = {}
     for gr in group_for_selection:        
         for dic_items in group_dict.items():            

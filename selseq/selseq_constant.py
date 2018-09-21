@@ -11,7 +11,7 @@ GROUP_TAG = ['Group1','Group2']
 group_for_selection = ['Group1','Group2']
 PERCENT_RANGE  = 5
 PERSENT_THRESHHOLD = 70
-
+assemble_query_files = ['InfluenzaA1','InfluenzaA3']
 if sys.platform == 'linux':
 	#Linux
 	HOME_DIRECTORY  = os.getcwd() + '/'
@@ -34,3 +34,4 @@ if sys.platform == 'win32':
 HOME_FILES = os.listdir(HOME_DIRECTORY)
 
 ASSEMBLE_FILES = [file for file in HOME_FILES if file.endswith('.faa')]
+ASSEMBLE_NAMES = [file[0:-4] for file in HOME_FILES if file.endswith('.faa')]

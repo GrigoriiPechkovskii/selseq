@@ -71,7 +71,7 @@ class Control():
         self.output = []
         
     def _checkStartSeq(self):        
-        rename_opened = open(self.redata_dir + 'joint_file')      
+        rename_opened = open(self.redata_dir + 'joint_file.faa')      
         for rename_line in rename_opened:
             if '>' in rename_line:
                 self.startseq_count += 1

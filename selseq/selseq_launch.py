@@ -116,23 +116,22 @@ data_persent_for_plot_blast = pd.Series(plt_dic)
 plot_hist_frequency(data_persent_for_plot_blast.values[data_persent_for_plot_blast.values != 100],
                     ALNDATA_DIRECTORY,'data_persent_for_plot_blast.png')
 
-
+group_HOME_DIRECTORY[ALNDATA_DIRECTORY] = [ALNDATA_DIRECTORY]
 #===================================================================              
-for group_lst,subgroup_lst in group_HOME_DIRECTORY.items():
+for subgroup_lst in group_HOME_DIRECTORY.values():
     for subgroup in subgroup_lst:
         into(subgroup)
-        plot_hist_frequency_into(subgroup,'into.csv',name_plot=subgroup.rsplit('/',2)[-2]+'_plot_into.png')
-        plot_hist_frequency_into_pie_chart(subgroup,'into.csv',name_plot=subgroup.rsplit(slash,2)[-2]+'_plot_pie_into.png')
         entropy_calculate(subgroup)
         common (subgroup)
-into(ALNDATA_DIRECTORY)
+        plot_hist_frequency_into(subgroup,'into.csv',name_plot=subgroup.rsplit('/',2)[-2]+'_plot_into.png')
+        plot_hist_frequency_into_pie_chart(subgroup,'into.csv',name_plot=subgroup.rsplit(slash,2)[-2]+'_plot_pie_into.png')
+        
 
-plot_hist_frequency_into(ALNDATA_DIRECTORY,'into.csv',name_plot=ALNDATA_DIRECTORY.rsplit(slash,2)[-2]+'_plot_into.png')       
-
-plot_hist_frequency_into_pie_chart(ALNDATA_DIRECTORY,'into.csv',name_plot=ALNDATA_DIRECTORY.rsplit(slash,2)[-2]+'_plot_pie_into.png')       
-
-entropy_calculate(ALNDATA_DIRECTORY)
-common (ALNDATA_DIRECTORY)
+#into(ALNDATA_DIRECTORY)
+#plot_hist_frequency_into(ALNDATA_DIRECTORY,'into.csv',name_plot=ALNDATA_DIRECTORY.rsplit(slash,2)[-2]+'_plot_into.png')       
+#plot_hist_frequency_into_pie_chart(ALNDATA_DIRECTORY,'into.csv',name_plot=ALNDATA_DIRECTORY.rsplit(slash,2)[-2]+'_plot_pie_into.png')       
+#entropy_calculate(ALNDATA_DIRECTORY)
+#common (ALNDATA_DIRECTORY)
 selseq_control.timecheck('calculate')
 #=============================================================================================
 
