@@ -129,7 +129,7 @@ class selseq_launcher():
         #joining_files(HOME_FILES,REDATA_DIRECTORY)
         db_for_blast(ASSEMBLE_FILES,'joint_file')
 
-        selseq_control.timecheck('before_blast_selectively')
+        selseq_control.timecheck('before_blast_total')
         
         blast_total()#!
         selseq_control.timecheck('blast')
@@ -169,8 +169,8 @@ class selseq_launcher():
         self.high_control()     
 
 
-ln = selseq_launcher()
-#ln.selectively()
-ln.total()
-
-print('end high')
+if __name__ == '__main__':   
+    ln = selseq_launcher()
+    #ln.selectively()
+    ln.total()
+    print('end high')

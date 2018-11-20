@@ -103,7 +103,7 @@ class ParsingBlast():
             if flag:                
                 self.choiced_full[self.id_query] =choiced[self.id_query]
 
-    def parsing_with_union(self,*blast_tbl_add):
+    def parsing_with_union(self,*blast_tbl_add):#!!!do not undrstand why var blast_tbl_add exist
         '''Parsing blast table with using union set'''        
         if len(blast_tbl_add) > 0:
             self.blast_tbl = blast_tbl_add 

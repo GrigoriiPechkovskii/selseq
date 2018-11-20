@@ -87,9 +87,9 @@ class Cluster():
             self.csvprep += [[i.strip() for i in line.strip().split(',')]]
         table_opened.close()
 
-    def _TableHead(self):
+    def _TableHead(self): 
         for line in self.csvprep:
-            if '#' in line[0]:
+            if '#' in line[0]: #FIX # 
                 self.table_head += line
 
     def _ClusterIndexing(self):
@@ -205,6 +205,7 @@ def db_for_blast(assemble_files,name):
                 #join_assemble.remove()
 
 def blast_total():
+    '''blast against all ASSEMBLE_FILES with delete [0] for stairs'''
     n = 0
     for index in range(len(ASSEMBLE_FILES)):    
         n+=1
