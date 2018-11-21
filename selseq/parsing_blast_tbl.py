@@ -1,8 +1,8 @@
-import numpy as np
-import matplotlib.pyplot as plt
+#import numpy as np
+#import matplotlib.pyplot as plt
 import pandas as pd
-import os
-import re
+#import os
+#import re
 from selseq_constant import *
 from selseq_main import find_tag, SequenceFasta
 print('start tbl_pars_pandas')

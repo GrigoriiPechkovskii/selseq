@@ -1,4 +1,4 @@
-#Assembly,Group
-InfluenzaA1,Influenz
-InfluenzaA2,Influenz
-InfluenzaA3,Influenz
+#Assembly,Group1,Group2
+InfluenzaA1,Influenz,Type1
+InfluenzaA2,Influenz,Type1
+InfluenzaA3,Influenz,Type2

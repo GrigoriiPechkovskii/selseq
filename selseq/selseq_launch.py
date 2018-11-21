@@ -1,12 +1,11 @@
 #!/usr/bin/env python
 from selseq_constant import *
-
 from selseq_clustering import *
 from selseq_main import *
 from parsing_blast_tbl import *
 import selseq_control as selseq_control
 from selseq_plot import *
-
+from selseq_parsing_blast import *
 
 print('start __main__')
 
@@ -34,14 +33,19 @@ joining_files(HOME_FILES,REDATA_DIRECTORY)
 
 selseq_control.timecheck('beforblast')
 
-blast('joint_file',QUERY_SEQ, 'blastdb','tbl.csv')
-
+#blast('joint_file',QUERY_SEQ, 'blastdb','tbl.csv')
+#blast_total()
+blast_selectively(assemble_query_files)
 selseq_control.timecheck('blast')
 
-parsing_blast('tbl.csv')
+#pb = ParsingBlast(*['join_assemble1_tbl.csv','join_assemble2_tbl.csv','join_assemble3_tbl.csv'])
+pb = ParsingBlast(*QUERY_SEQ_LIST)
+pb.parsing_with_union()
+pb.distribution()
+#parsing_blast('tbl.csv')
 #parsing_balst_table('tbl.csv')
 
-selseq_control.timecheck('tbl')
+selseq_control.timecheck('Parsing_tbl')
 
 print('start programm tail')
 
@@ -51,7 +55,10 @@ selseq_control.timecheck('tail')
 
 blast('tail','tail','tailblastdb','tbltail.csv')
 
-parsing_blast('tbltail.csv')
+#pb = ParsingBlast(*['tbltail.csv'])
+pb.parsing_with_union(*['tbltail.csv'])
+pb.distribution()
+#parsing_blast('tbltail.csv')
 #parsing_balst_table('tbltail.csv')
 
 selseq_control.timecheck('blatstltail')
@@ -61,8 +68,8 @@ make_muscle(REDATA_DIRECTORY)
 selseq_control.timecheck('mucsle')
 
 into(ALNDATA_DIRECTORY,name='into_before.csv')
-plot_hist_frequency_into(ALNDATA_DIRECTORY,'into_before.csv',name_plot=ALNDATA_DIRECTORY.rsplit('/',2)[-2]+'_plot_into_before.png')       
-plot_hist_frequency_into_pie_chart(ALNDATA_DIRECTORY,'into_before.csv',name_plot=ALNDATA_DIRECTORY.rsplit('/',2)[-2]+'_plot_into_before.png')       
+plot_hist_frequency_into(ALNDATA_DIRECTORY,'into_before.csv',name_plot=ALNDATA_DIRECTORY.rsplit(slash,2)[-2]+'_plot_into_before.png')       
+plot_hist_frequency_into_pie_chart(ALNDATA_DIRECTORY,'into_before.csv',name_plot=ALNDATA_DIRECTORY.rsplit(slash,2)[-2]+'_plot_pie_into_before.png')       
 
 selseq_control.timecheck('into')
 
@@ -109,27 +116,27 @@ data_persent_for_plot_blast = pd.Series(plt_dic)
 plot_hist_frequency(data_persent_for_plot_blast.values[data_persent_for_plot_blast.values != 100],
                     ALNDATA_DIRECTORY,'data_persent_for_plot_blast.png')
 
-
+group_HOME_DIRECTORY[ALNDATA_DIRECTORY] = [ALNDATA_DIRECTORY]
 #===================================================================              
-for group_lst,subgroup_lst in group_HOME_DIRECTORY.items():
+for subgroup_lst in group_HOME_DIRECTORY.values():
     for subgroup in subgroup_lst:
         into(subgroup)
-        plot_hist_frequency_into(subgroup,'into.csv',name_plot=subgroup.rsplit('/',2)[-2]+'_plot_into.png')
-        plot_hist_frequency_into_pie_chart(subgroup,'into.csv',name_plot=subgroup.rsplit('/',2)[-2]+'_plot_pie_into.png')
         entropy_calculate(subgroup)
         common (subgroup)
-into(ALNDATA_DIRECTORY)
+        plot_hist_frequency_into(subgroup,'into.csv',name_plot=subgroup.rsplit('/',2)[-2]+'_plot_into.png')
+        plot_hist_frequency_into_pie_chart(subgroup,'into.csv',name_plot=subgroup.rsplit(slash,2)[-2]+'_plot_pie_into.png')
+        
 
-plot_hist_frequency_into(ALNDATA_DIRECTORY,'into.csv',name_plot=ALNDATA_DIRECTORY.rsplit('/',2)[-2]+'_plot_into.png')       
-
-plot_hist_frequency_into_pie_chart(ALNDATA_DIRECTORY,'into.csv',name_plot=ALNDATA_DIRECTORY.rsplit('/',2)[-2]+'_plot_pie_into.png')       
-
-entropy_calculate(ALNDATA_DIRECTORY)
-common (ALNDATA_DIRECTORY)
+#into(ALNDATA_DIRECTORY)
+#plot_hist_frequency_into(ALNDATA_DIRECTORY,'into.csv',name_plot=ALNDATA_DIRECTORY.rsplit(slash,2)[-2]+'_plot_into.png')       
+#plot_hist_frequency_into_pie_chart(ALNDATA_DIRECTORY,'into.csv',name_plot=ALNDATA_DIRECTORY.rsplit(slash,2)[-2]+'_plot_pie_into.png')       
+#entropy_calculate(ALNDATA_DIRECTORY)
+#common (ALNDATA_DIRECTORY)
 selseq_control.timecheck('calculate')
 #=============================================================================================
 
 Cp = selseq_control.Control(REDATA_DIRECTORY,ALNDATA_DIRECTORY)
 Cp.doControl()
+
 
 selseq_control.timecheck('control')

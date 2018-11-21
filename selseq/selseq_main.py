@@ -6,13 +6,14 @@ print('start programm')
 import os
 import subprocess
 import math
-import matplotlib.pyplot as plt
-import pandas as pd
+#import matplotlib.pyplot as plt
+#import pandas as pd
 import numpy as np
 import re
 from selseq_constant import *
-import selseq_clustering
-import selseq_plot
+
+import selseq_clustering#move?
+import selseq_plot#move?
 
 def make_tags(tags_names,tags_contents,string):
 	'''Adds tags to string and return changed string with tags'''
@@ -86,9 +87,9 @@ class Cluster():
             self.csvprep += [[i.strip() for i in line.strip().split(',')]]
         table_opened.close()
 
-    def _TableHead(self):
+    def _TableHead(self): 
         for line in self.csvprep:
-            if '#' in line[0]:
+            if '#' in line[0]: #FIX # 
                 self.table_head += line
 
     def _ClusterIndexing(self):
@@ -132,7 +133,11 @@ def UnpackCluster(lst):
         val_str += ',' + val#Note splitter
     return val_str.strip(',')
 
-def rename_fasta(files,cluster_dic):     
+#seq_locate = {} #for locate fasta file
+
+def rename_fasta(files,cluster_dic):
+    #global  seq_locate #for locate fasta file
+    #set_seq = set()#for locate fasta file  
     num = 0
     for file_name in files:
         if '.faa' in file_name:
@@ -142,12 +147,18 @@ def rename_fasta(files,cluster_dic):
                 if '>' in file_line:
                     num += 1
                     string = '>'
-                    file_line = make_tags(['seq_id','assemble','main','cluster_tag'],['seq_num_' + str(num),file_name[0:-4],file_line.strip('>\n'),UnpackCluster(cluster_dic[file_name[0:-4]])],string) + '\n' 
+                    file_line = make_tags(['seq_id','assemble','','main','cluster_tag'],['seq_num_' + str(num),file_name[0:-4],' ',file_line.strip('>\n'),UnpackCluster(cluster_dic[file_name[0:-4]])],string) + '\n' 
+                    
+                    #set_seq.add('seq_num_' + str(num))#for locate fasta file
                     #file_line2 ='>' + 'seq_num_' + str(num) + '<'+ file_name[0:-4]+ '<' + file_line.strip('>\n') + '&&&' + UnpackCluster(cluster.cluster_dic[file_name[0:-4]])+'\n'  #внимание на разделитель
                     file_reopened.write(file_line)                          
 
                 else:
                    file_reopened.write(file_line)
+
+            #seq_locate[file_name[0:-4]] = set_seq#for locate fasta file
+            #set_seq = set()#for locate fasta file
+
             file_opened.close()
             file_reopened.close()
 
@@ -156,21 +167,58 @@ def joining_files(files,REDATA_DIRECTORY):
     for file_name in files:
         if '.faa' in file_name: #!!!!!
             file_opened = open ( REDATA_DIRECTORY + file_name,'r' )
-            file_reopened = open (REDATA_DIRECTORY + 'joint_file', 'a' )
+            file_reopened = open (REDATA_DIRECTORY + 'joint_file.faa', 'a' )
             var_name_file = file_opened.read()
             file_reopened.write(var_name_file)
             file_opened.close()
             file_reopened.close()
 
-def blast(DB,QUERY_SEQ,OUT_BD,OUT_TBL):
+def blast(DB,QUERY_SEQ,OUT_BD,OUT_TBL,DIRECTORY=REDATA_DIRECTORY):
 
     if sys.platform == 'linux':
-        subprocess.call('/home/grigoriipechkovskii/bio/ncbi-blast-2.7.1+/bin/makeblastdb -in '+ REDATA_DIRECTORY + DB + ' -dbtype prot -out ' + REDATA_DIRECTORY + OUT_BD + ' >' + HOME_DIRECTORY + '111',stdout=subprocess.PIPE,shell=True)
-        subprocess.call('/home/grigoriipechkovskii/bio/ncbi-blast-2.7.1+/bin/blastp -db '+ REDATA_DIRECTORY + OUT_BD + ' -query '+ REDATA_DIRECTORY + QUERY_SEQ + ' -out '+ REDATA_DIRECTORY + OUT_TBL + ' -outfmt 10 -evalue 0.001 2>' + HOME_DIRECTORY + '111', shell=True)
+        subprocess.call('/home/grigoriipechkovskii/bio/ncbi-blast-2.7.1+/bin/makeblastdb -in '+ DIRECTORY + DB + ' -dbtype prot -out ' + DIRECTORY + OUT_BD + ' >' + HOME_DIRECTORY + '111',stdout=subprocess.PIPE,shell=True)
+        subprocess.call('/home/grigoriipechkovskii/bio/ncbi-blast-2.7.1+/bin/blastp -db '+ DIRECTORY + OUT_BD + ' -query '+ DIRECTORY + QUERY_SEQ + ' -out '+ DIRECTORY + OUT_TBL + ' -outfmt 10 -evalue 0.001 2>' + HOME_DIRECTORY + '111', shell=True)
     
     if sys.platform == 'win32':    
-        subprocess.call('makeblastdb -in '+ REDATA_DIRECTORY + DB + ' -dbtype prot -out ' + REDATA_DIRECTORY + OUT_BD +' >' + HOME_DIRECTORY + '111',stdout=subprocess.PIPE,shell=True)
-        subprocess.call('blastp -db '+ REDATA_DIRECTORY + OUT_BD + ' -query '+ REDATA_DIRECTORY + QUERY_SEQ + ' -out '+ REDATA_DIRECTORY + OUT_TBL +' -outfmt 10 -evalue 0.001 2>' + HOME_DIRECTORY + '111', shell=True)
+        subprocess.call('makeblastdb -in '+ DIRECTORY + DB + ' -dbtype prot -out ' + DIRECTORY + OUT_BD +' >' + HOME_DIRECTORY + '111',stdout=subprocess.PIPE,shell=True)
+        subprocess.call('blastp -db '+ DIRECTORY + OUT_BD + ' -query '+ DIRECTORY + QUERY_SEQ + ' -out '+ DIRECTORY + OUT_TBL +' -outfmt 10 -evalue 0.001 2>' + HOME_DIRECTORY + '111', shell=True)
+
+
+def blast_selectively(assemble_query_files): 
+    for assemble_query in assemble_query_files:
+        #print ('joint_file.faa',assemble_query+'.faa', 'blastdb_'+assemble_query,'tbl_' + assemble_query + '.csv')
+        blast('joint_file.faa',assemble_query+'.faa', 'blastdb_'+assemble_query,'tbl_' + assemble_query + '.csv')
+
+
+def db_for_blast(assemble_files,name):
+    '''Make faa file from assemble for total blast'''
+    
+    with open(REDATA_DIRECTORY + name + '.faa','a') as join_assemble:
+        for file in assemble_files:
+            
+            with open(REDATA_DIRECTORY+file,'r') as assemble_file_opened:
+                assemble_file_read = assemble_file_opened.read()
+                join_assemble.write(assemble_file_read)
+
+    path_join_assemble = REDATA_DIRECTORY + name + '.faa'
+    return path_join_assemble 
+                #join_assemble.remove()
+
+def blast_total():
+    '''blast against all ASSEMBLE_FILES with delete [0] for stairs'''
+    n = 0
+    for index in range(len(ASSEMBLE_FILES)):    
+        n+=1
+        #print(ASSEMBLE_FILES[0])    
+        path_assemble = db_for_blast(ASSEMBLE_FILES,'join_assemble' + str(n))
+        name_assemble = os.path.basename(path_assemble)
+        #blast()
+        blast(name_assemble,ASSEMBLE_FILES[0],name_assemble[0:-4] + '_db',name_assemble[0:-4] + '_tbl.csv')
+        os.remove(REDATA_DIRECTORY + name_assemble[0:-4] + '_db.phr')
+        os.remove(REDATA_DIRECTORY + name_assemble[0:-4] + '_db.pin')
+        os.remove(REDATA_DIRECTORY +name_assemble[0:-4] + '_db.psq')
+        os.remove(REDATA_DIRECTORY +name_assemble)
+        ASSEMBLE_FILES.pop(0)
 
 def parsing_balst_table(tbl):
     
@@ -307,7 +355,7 @@ class Selection():
                                 seq_group_opened.close()
                     
 def make_group_dict_for_selection(group_for_selection,group_dict):
-    global a
+    #global a
     group_dict_for_selection = {}
     for gr in group_for_selection:        
         for dic_items in group_dict.items():            
