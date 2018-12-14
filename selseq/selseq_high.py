@@ -37,7 +37,7 @@ class selseq_launcher():
 
         selseq_control.timecheck('before_blast_selectively')
         
-        blast_selectively(assemble_query_files)
+        blast_selectively(ASSEMBLE_QUERY_FILES)
         selseq_control.timecheck('blast')
         pb = ParsingBlast(*QUERY_SEQ_LIST)
         pb.parsing_with_union()
@@ -94,7 +94,8 @@ class selseq_launcher():
 
         for subgroup_lst in self.group_HOME_DIRECTORY.values():
             for subgroup in subgroup_lst:
-                plot_hist_frequency_into(subgroup,'into.csv',name_plot=subgroup.rsplit('/',2)[-2]+'_plot_into.png')
+                print(subgroup.rsplit(slash,2)[-2])
+                plot_hist_frequency_into(subgroup,'into.csv',name_plot=subgroup.rsplit(slash,2)[-2]+'_plot_into.png')
                 plot_hist_frequency_into_pie_chart(subgroup,'into.csv',name_plot=subgroup.rsplit(slash,2)[-2]+'_plot_pie_into.png')
 
     def into_plot_before(self):
@@ -124,14 +125,14 @@ class selseq_launcher():
         #if TABLE_CSV exsist
         cluster = Cluster(TABLE_CSV,ASSEMBLE_NAMES,GROUP_TAG)
         cluster.ClusterDic()
-        rename_fasta(HOME_FILES,cluster.cluster_dic)
+        rename_fasta(HOME_DIRECTORY,cluster.cluster_dic)
 
         #joining_files(HOME_FILES,REDATA_DIRECTORY)
-        db_for_blast(ASSEMBLE_FILES,'joint_file')
+        db_for_blast(ASSEMBLE_FILES,REDATA_DIRECTORY ,'joint_file')
 
         selseq_control.timecheck('before_blast_total')
         
-        blast_total()#!
+        blast_total(ASSEMBLE_FILES,REDATA_DIRECTORY)#!
         selseq_control.timecheck('blast')
         pb = ParsingBlast(*['join_assemble1_tbl.csv','join_assemble2_tbl.csv','join_assemble3_tbl.csv'])
         pb.parsing_with_union()
@@ -145,7 +146,7 @@ class selseq_launcher():
         #pb.distribution()
         #selseq_control.timecheck('blatstltail')
 
-        make_muscle(REDATA_DIRECTORY)
+        make_muscle(REDATA_DIRECTORY,ALNDATA_DIRECTORY,HOME_DIRECTORY)
         selseq_control.timecheck('mucsle')
 
         self.into_plot_before()

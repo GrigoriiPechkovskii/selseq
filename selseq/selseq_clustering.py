@@ -1,9 +1,11 @@
 print('start identity_percent')
 import os
+import subprocess
+
 import pandas as pd
 import numpy as np
 from sklearn.cluster import KMeans
-import subprocess
+
 from selseq_main import *#all?
 from selseq_constant import *
 

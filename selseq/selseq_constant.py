@@ -11,7 +11,7 @@ GROUP_TAG = ['Group1','Group2']
 group_for_selection = ['Group1','Group2']
 PERCENT_RANGE  = 5
 PERSENT_THRESHHOLD = 70
-assemble_query_files = ['InfluenzaA1','InfluenzaA3']
+ASSEMBLE_QUERY_FILES = ['InfluenzaA1','InfluenzaA3']
 if sys.platform == 'linux':
 	#Linux
 	HOME_DIRECTORY  = os.getcwd() + '/'

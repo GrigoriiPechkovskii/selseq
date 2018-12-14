@@ -68,10 +68,10 @@ class SequenceFasta():
         self.seq_len = len(self.seq_lst)
 
 
-class Cluster():
+class Cluster():#!fix this class
     '''Return dict with matching the name of the genome and its properties (cluster)'''
-    def __init__(self,CSV,file_name,clusters = GROUP_TAG):
-        self.CSC =CSV
+    def __init__(self,CSV,file_name,clusters):#clusters = GROUP_TAG
+        self.CSV =CSV
         self.file_name = file_name
         self.clusters = clusters
         self.csvprep = []
@@ -82,7 +82,7 @@ class Cluster():
         self._CsvPrep()
 
     def _CsvPrep(self):
-        table_opened = open (self.CSC)
+        table_opened = open (self.CSV)
         for line in table_opened:
             self.csvprep += [[i.strip() for i in line.strip().split(',')]]
         table_opened.close()
@@ -135,13 +135,14 @@ def UnpackCluster(lst):
 
 #seq_locate = {} #for locate fasta file
 
-def rename_fasta(files,cluster_dic):
+def rename_fasta(directory,cluster_dic):
     #global  seq_locate #for locate fasta file
-    #set_seq = set()#for locate fasta file  
+    #set_seq = set()#for locate fasta file
+    files = os.listdir(directory)  #Home files maybe auto fun
     num = 0
     for file_name in files:
         if '.faa' in file_name:
-            file_opened = open (HOME_DIRECTORY + file_name, 'r' )
+            file_opened = open (directory + file_name, 'r' )
             file_reopened = open (REDATA_DIRECTORY + file_name, 'a' )
             for file_line in file_opened:
                 if '>' in file_line:
@@ -162,17 +163,18 @@ def rename_fasta(files,cluster_dic):
             file_opened.close()
             file_reopened.close()
 
-
-def joining_files(files,REDATA_DIRECTORY):
+'''
+def joining_files(directory):
+    files = os.listdir(directory)
     for file_name in files:
         if '.faa' in file_name: #!!!!!
-            file_opened = open ( REDATA_DIRECTORY + file_name,'r' )
-            file_reopened = open (REDATA_DIRECTORY + 'joint_file.faa', 'a' )
+            file_opened = open ( directory + file_name,'r' )
+            file_reopened = open (directory + 'joint_file.faa', 'a' )
             var_name_file = file_opened.read()
             file_reopened.write(var_name_file)
             file_opened.close()
             file_reopened.close()
-
+'''
 def blast(DB,QUERY_SEQ,OUT_BD,OUT_TBL,DIRECTORY=REDATA_DIRECTORY):
 
     if sys.platform == 'linux':
@@ -190,37 +192,37 @@ def blast_selectively(assemble_query_files):
         blast('joint_file.faa',assemble_query+'.faa', 'blastdb_'+assemble_query,'tbl_' + assemble_query + '.csv')
 
 
-def db_for_blast(assemble_files,name):
+def db_for_blast(assemble_files,abs_path,name):#maybe del name
     '''Make faa file from assemble for total blast'''
     
-    with open(REDATA_DIRECTORY + name + '.faa','a') as join_assemble:
+    with open(abs_path + name + '.faa','a') as join_assemble:
         for file in assemble_files:
             
-            with open(REDATA_DIRECTORY+file,'r') as assemble_file_opened:
+            with open(abs_path+file,'r') as assemble_file_opened:
                 assemble_file_read = assemble_file_opened.read()
                 join_assemble.write(assemble_file_read)
 
-    path_join_assemble = REDATA_DIRECTORY + name + '.faa'
+    path_join_assemble = abs_path + name + '.faa'
     return path_join_assemble 
                 #join_assemble.remove()
 
-def blast_total():
+def blast_total(assemble_files,directory):
     '''blast against all ASSEMBLE_FILES with delete [0] for stairs'''
     n = 0
-    for index in range(len(ASSEMBLE_FILES)):    
+    for index in range(len(assemble_files)):    
         n+=1
         #print(ASSEMBLE_FILES[0])    
-        path_assemble = db_for_blast(ASSEMBLE_FILES,'join_assemble' + str(n))
+        path_assemble = db_for_blast(assemble_files,directory,'join_assemble' + str(n))
         name_assemble = os.path.basename(path_assemble)
         #blast()
-        blast(name_assemble,ASSEMBLE_FILES[0],name_assemble[0:-4] + '_db',name_assemble[0:-4] + '_tbl.csv')
-        os.remove(REDATA_DIRECTORY + name_assemble[0:-4] + '_db.phr')
-        os.remove(REDATA_DIRECTORY + name_assemble[0:-4] + '_db.pin')
-        os.remove(REDATA_DIRECTORY +name_assemble[0:-4] + '_db.psq')
-        os.remove(REDATA_DIRECTORY +name_assemble)
-        ASSEMBLE_FILES.pop(0)
+        blast(name_assemble,assemble_files[0],name_assemble[0:-4] + '_db',name_assemble[0:-4] + '_tbl.csv')
+        os.remove(directory + name_assemble[0:-4] + '_db.phr')
+        os.remove(directory + name_assemble[0:-4] + '_db.pin')
+        os.remove(directory +name_assemble[0:-4] + '_db.psq')
+        os.remove(directory +name_assemble)
+        assemble_files.pop(0)
 
-def parsing_balst_table(tbl):
+def parsing_balst_table(tbl,ALNDATA_DIRECTORY,REDATA_DIRECTORY): #not use
     
     files = os.listdir(ALNDATA_DIRECTORY)
     base_used = list()
@@ -247,30 +249,30 @@ def parsing_balst_table(tbl):
 
 print('start programm tail')
 
-def make_tail(REDATA_DIRECTORY):
+def make_tail(redata_directory):
 
-    files = os.listdir(REDATA_DIRECTORY)
+    files = os.listdir(redata_directory)
     set_aln = set()
 
     for file_aln in files:  
         if '.faa' and 'seq_num' in file_aln :
-            file_aln_opened = open(REDATA_DIRECTORY + file_aln)
+            file_aln_opened = open(redata_directory + file_aln)
             for line_file_aln in file_aln_opened:
                 if '>' in line_file_aln:
                     set_aln.add(line_file_aln.strip()) 
     file_aln_opened.close()
 
 
-    files = os.listdir(REDATA_DIRECTORY)
+    files = os.listdir(redata_directory)
 
     #tail = open(REDATA_DIRECTORY + 'tail', 'a')
     prot_save = str()
     name_save = str()
-    tail = open(REDATA_DIRECTORY + 'tail', 'a')
+    tail = open(redata_directory + 'tail', 'a')
     for file in files:
         if file.endswith('.faa'):
 
-            omics = SequenceFasta(REDATA_DIRECTORY + file)
+            omics = SequenceFasta(redata_directory + file)
             omics.seq_process()
             for index in range(0,len(omics.name_lst)):
                if omics.name_lst[index].strip() not in set_aln:
@@ -278,12 +280,12 @@ def make_tail(REDATA_DIRECTORY):
 
     tail.close()
 
-def make_muscle(REDATA_DIRECTORY):
+def make_muscle(redata_directory,alndata_directory,home_directory):
 
-    files = os.listdir(REDATA_DIRECTORY)
+    files = os.listdir(redata_directory)
     for protein_file in files:
         if 'seq_num' in protein_file:
-            subprocess.call('muscle ' + '-in ' +REDATA_DIRECTORY + protein_file + ' -out ' + ALNDATA_DIRECTORY + protein_file[0:-4] + '.aln 2>' + HOME_DIRECTORY + '111',shell = True)
+            subprocess.call('muscle ' + '-in ' +redata_directory + protein_file + ' -out ' + alndata_directory + protein_file[0:-4] + '.aln 2>' + home_directory + '111',shell = True)
 
 def into(direct,name='into.csv'):
     home_files = os.listdir(HOME_DIRECTORY)
@@ -343,14 +345,14 @@ class Selection():
                 for index in range(0,len(omics.name_lst)):                    
                     omics.seq_lst[index] = omics.seq_lst[index].replace('-','').replace('\n','') + '\n'                    
                     for key in self.group:
-                        if not os.access(HOME_DIRECTORY + NAME_EXP+'aln_'+ key + '/',os.F_OK):
-                            os.mkdir(HOME_DIRECTORY + NAME_EXP+'aln_'+ key + '/') 
+                        if not os.access(HOME_DIRECTORY + NAME_EXP+'aln_'+ key + slash,os.F_OK):
+                            os.mkdir(HOME_DIRECTORY + NAME_EXP+'aln_'+ key + slash) 
                         for val in self.group[key]:
-                            if not os.access(HOME_DIRECTORY +NAME_EXP+'aln_'+ key + '/' + 'aln_' + val+ '/',os.F_OK):
-                                os.mkdir(HOME_DIRECTORY +NAME_EXP+'aln_' + key + '/' + 'aln_' + val+ '/')                                           
+                            if not os.access(HOME_DIRECTORY +NAME_EXP+'aln_'+ key + slash + 'aln_' + val+ slash,os.F_OK):
+                                os.mkdir(HOME_DIRECTORY +NAME_EXP+'aln_' + key + slash + 'aln_' + val+ slash)                                           
                         
                             if val in omics.name_lst[index]:                                                    
-                                seq_group_opened = open(HOME_DIRECTORY +NAME_EXP+'aln_'+ key + '/' +  'aln_' +val + '/' + file,'a')
+                                seq_group_opened = open(HOME_DIRECTORY +NAME_EXP+'aln_'+ key + slash +  'aln_' +val + slash + file,'a')
                                 seq_group_opened.write(omics.name_lst[index] + omics.seq_lst[index])                                
                                 seq_group_opened.close()
                     
